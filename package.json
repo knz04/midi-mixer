@@ -7,10 +7,14 @@
   },
   "author": "",
   "license": "ISC",
+<<<<<<< HEAD
   "description": "",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.0",
     "mongoose": "^8.6.3"
   }
+=======
+  "description": ""
+>>>>>>> main
 }
