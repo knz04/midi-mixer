@@ -1,12 +1,29 @@
-import { Outlet } from "react-router-dom";
+// import { Outlet } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
+import { Routes, Route } from "react-router-dom";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import axios from "axios";
+import { Toaster } from "react-hot-toast";
+import { UserContextProvider } from "../context/userContext";
+import Dashboard from "./pages/Dashboard";
+
+axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.withCredentials = true;
 
 const App = () => {
   return (
-    <div className="w-full p-6">
+    <UserContextProvider>
       <Navbar />
-      <Outlet />
-    </div>
+      <Toaster position="bottom-right" toastOptions={{ duration: 2000 }} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </UserContextProvider>
   );
 };
 export default App;
