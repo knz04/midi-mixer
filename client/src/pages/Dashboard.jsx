@@ -9,7 +9,7 @@ const Dashboard = () => {
     return <Navigate to="/" />;
   }
 
-  return <div>Welcome to the Dashboard!</div>;
+  return <div>{!!user && <h1>Hi, {user.name}!</h1>}</div>;
 };
 
 export default Dashboard;
