@@ -1,13 +1,15 @@
-import React from "react";
-import { useContext } from "react";
+import React, { useContext } from "react";
+import { Navigate } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
 
-export default function Dashboard() {
+const Dashboard = () => {
   const { user } = useContext(UserContext);
-  return (
-    <div>
-      <h1>Dashboard</h1>
-      {!!user && <h1>Hi, {user.name}!</h1>}
-    </div>
-  );
-}
+
+  if (!user) {
+    return <Navigate to="/" />;
+  }
+
+  return <div>Welcome to the Dashboard!</div>;
+};
+
+export default Dashboard;

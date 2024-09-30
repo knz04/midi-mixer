@@ -1,28 +1,42 @@
-import { NavLink } from "react-router-dom";
-import logo from "../assets/logo.png"; // Import the logo
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../../context/userContext";
+import toast from "react-hot-toast";
 
-export default function Navbar() {
+const Navbar = () => {
+  const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext); // Access user context
+
+  const handleLogout = async () => {
+    try {
+      await axios.post("/logout"); // Send request to backend
+      setUser(null); // Clear user context
+      navigate("/"); // Redirect to home page after logout
+      toast.success("Logged out successfully");
+    } catch (error) {
+      toast.error("Logout failed, please try again.");
+    }
+  };
+
   return (
-    <div>
-      <nav>
-        <NavLink to="/">
-          <img
-            alt="Logo"
-            className="h-10 inline"
-            src={logo} // Use the imported logo
-          ></img>
-        </NavLink>
-
-        <NavLink to="/register">Register</NavLink>
-        <NavLink to="/login">Login</NavLink>
-
-        {/* <NavLink
-          className="inline-flex items-center justify-center whitespace-nowrap text-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-slate-100 h-9 rounded-md px-3"
-          to="/create"
-        >
-          Create Employee
-        </NavLink> */}
-      </nav>
-    </div>
+    <nav>
+      <h1>MIDI Mixer</h1>
+      <div>
+        {/* Conditionally show buttons based on user's login status */}
+        {user ? (
+          <>
+            <Link to="/dashboard">Dashboard</Link>
+            <button onClick={handleLogout}>Logout</button>
+          </>
+        ) : (
+          <>
+            <Link to="/">Home</Link>
+          </>
+        )}
+      </div>
+    </nav>
   );
-}
+};
+
+export default Navbar;

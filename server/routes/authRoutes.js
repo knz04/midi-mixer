@@ -20,5 +20,9 @@ router.get("/", test);
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/profile", getProfile);
+router.post("/logout", (req, res) => {
+  res.clearCookie("token");
+  return res.json({ message: "Logged out successfully." });
+});
 
 module.exports = router;

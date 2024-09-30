@@ -1,11 +1,12 @@
-import React from "react";
-import { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../context/userContext";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { setUser } = useContext(UserContext); // Access the setUser function from context
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -20,9 +21,12 @@ export default function Login() {
         toast.error(data.error);
       } else {
         setData({});
-        navigate("/dashboard");
+        setUser(data); // Update user context with the logged-in user data
+        navigate("/dashboard"); // Redirect to dashboard
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error("Login failed, please try again.");
+    }
   };
 
   return (
