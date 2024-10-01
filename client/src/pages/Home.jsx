@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
+import signup from "../assets/signup.png";
+import login from "../assets/login2.png";
 
 export default function Home() {
   const { user } = useContext(UserContext);
@@ -13,12 +15,24 @@ export default function Home() {
     <div>
       <div>
         <Link to="/login">
-        <button><img src="src/assets/login.png" alt="Sign Up" style={{ width: "150px", height: "75px" }} /></button>
+          <button>
+            <img
+              src={login}
+              alt="Sign Up"
+              style={{ width: "150px", height: "75px" }}
+            />
+          </button>
         </Link>
       </div>
       <div>
         <Link to="/register">
-        <button><img src="src/assets/signup.png" alt="Sign Up" style={{ width: "150px", height: "75px" }} /></button>
+          <button>
+            <img
+              src={signup}
+              alt="Sign Up"
+              style={{ width: "150px", height: "75px" }}
+            />
+          </button>
         </Link>
       </div>
     </div>
