@@ -29,8 +29,8 @@ export default function Register() {
   };
 
   return (
-    <div>
-      <form onSubmit={registerUser}>
+    <div style={{ display: 'flex', flexDirection: 'column', maxWidth: '300px', margin: '0 auto' }}>
+      <form onSubmit={registerUser} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         <label>Name</label>
         <input
           type="text"
@@ -56,4 +56,4 @@ export default function Register() {
       </form>
     </div>
   );
-}
+}  

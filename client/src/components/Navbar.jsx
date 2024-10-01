@@ -22,7 +22,7 @@ const Navbar = () => {
 
   return (
     <nav>
-      <img src={logo} alt="MIDI Mixer Logo" style={{ height: "40px" }} />
+      <img src={logo} alt="MIDI Mixer Logo" style={{ height: "200px" }} />
       <div>
         {/* Conditionally show buttons based on user's login status */}
         {user ? (
@@ -30,11 +30,7 @@ const Navbar = () => {
             <Link to="/dashboard">Dashboard</Link>
             <button onClick={handleLogout}>Logout</button>
           </>
-        ) : (
-          <>
-            <Link to="/">Home</Link>
-          </>
-        )}
+        ) : null}
       </div>
     </nav>
   );
