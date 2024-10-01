@@ -17,7 +17,7 @@ export default function Home() {
         </Link>
       </div>
       <div>
-        <Link to="/signup">
+        <Link to="/register">
         <button><img src="src/assets/signup.png" alt="Sign Up" style={{ width: "150px", height: "75px" }} /></button>
         </Link>
       </div>
