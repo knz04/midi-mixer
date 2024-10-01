@@ -11,13 +11,14 @@ export default function Home() {
 
   return (
     <div>
-      <h2>Welcome to MIDI Mixer</h2>
       <div>
         <Link to="/login">
-          <button>Login</button>
+        <button><img src="src/assets/login.png" alt="Sign Up" style={{ width: "150px", height: "75px" }} /></button>
         </Link>
+      </div>
+      <div>
         <Link to="/register">
-          <button>Register</button>
+        <button><img src="src/assets/signup.png" alt="Sign Up" style={{ width: "150px", height: "75px" }} /></button>
         </Link>
       </div>
     </div>
