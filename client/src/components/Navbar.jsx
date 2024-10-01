@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../context/userContext";
 import toast from "react-hot-toast";
+import logo from "../assets/logo.png";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const Navbar = () => {
 
   return (
     <nav>
-      <h1>MIDI Mixer</h1>
+      <img src={logo} alt="MIDI Mixer Logo" style={{ height: "200px" }} />
       <div>
         {/* Conditionally show buttons based on user's login status */}
         {user ? (
@@ -29,11 +30,7 @@ const Navbar = () => {
             <Link to="/dashboard">Dashboard</Link>
             <button onClick={handleLogout}>Logout</button>
           </>
-        ) : (
-          <>
-            <Link to="/">Home</Link>
-          </>
-        )}
+        ) : null}
       </div>
     </nav>
   );

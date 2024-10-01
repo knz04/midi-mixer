@@ -30,8 +30,8 @@ export default function Login() {
   };
 
   return (
-    <div>
-      <form onSubmit={loginUser}>
+    <div style={{ display: 'flex', flexDirection: 'column', maxWidth: '300px', margin: '0 auto' }}>
+      <form onSubmit={loginUser} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         <label>Email</label>
         <input
           type="email"
@@ -50,4 +50,5 @@ export default function Login() {
       </form>
     </div>
   );
+  
 }
