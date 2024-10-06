@@ -1,8 +1,9 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
+import login from "../assets/login2.png";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ export default function Login() {
         navigate("/dashboard"); // Redirect to dashboard
       }
     } catch (error) {
+      console.error(error);
       toast.error("Login failed, please try again.");
     }
   };
@@ -46,7 +48,24 @@ export default function Login() {
           value={data.password}
           onChange={(e) => setData({ ...data, password: e.target.value })}
         />
-        <button type="submit">Login</button>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <button
+            type="submit"
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              width: "100px",
+              height: "50px",
+            }}
+          >
+            <img
+              src={login}
+              alt="Login"
+              style={{ width: "100%", height: "100%" }}
+            />
+          </button>
+        </div>
       </form>
     </div>
   );

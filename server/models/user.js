@@ -8,6 +8,12 @@ const userSchema = new Schema({
     unique: true,
   },
   password: String,
+  presets: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Preset", // Reference to the 'Preset' model
+    },
+  ],
 });
 
 const userModel = mongoose.model("User", userSchema);
