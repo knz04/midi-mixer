@@ -6,7 +6,7 @@
 BLEMIDI_CREATE_INSTANCE("BLE_MIDI_ENCODER", MIDI);
 
 // Total number of rotary encoders
-const int NRotaries = 3; // Adjust this number based on the total number of rotary encoders
+const int NRotaries = 1; // Adjust this number based on the total number of rotary encoders
 
 // Define pins for each rotary encoder (CLK and DT for each)
 const int rotaryPinCLK[NRotaries] = {16, 18, 20};  // CLK pins for each encoder
@@ -14,9 +14,7 @@ const int rotaryPinDT[NRotaries] = {17, 19, 21};   // DT pins for each encoder
 
 // Array of encoder objects
 RotaryEncoder encoders[NRotaries] = {
-    RotaryEncoder(rotaryPinCLK[0], rotaryPinDT[0]),
-    RotaryEncoder(rotaryPinCLK[1], rotaryPinDT[1]),
-    RotaryEncoder(rotaryPinCLK[2], rotaryPinDT[2])
+    RotaryEncoder(rotaryPinCLK[0], rotaryPinDT[0])
 };
 
 // Acceleration constants

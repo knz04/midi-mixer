@@ -14,7 +14,7 @@ const int buttonPin = 18;  // Connect to the button pin
 RotaryEncoder encoder(pinA, pinB);
 
 // Acceleration constants
-constexpr float m = 10;             // Maximum acceleration factor
+constexpr float m = 15;             // Maximum acceleration factor
 constexpr float longCutoff = 200;   // Time (ms) with no acceleration
 constexpr float shortCutoff = 5;    // Minimum time (ms) with maximum acceleration
 
