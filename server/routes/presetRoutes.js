@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const cors = require("corst");
+const cors = require("cors");
 const { createPreset } = require("../controllers/presetControllers");
 
 router.use(
