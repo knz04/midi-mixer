@@ -32,40 +32,29 @@ export default function Login() {
   };
 
   return (
-    <div>
-      <form onSubmit={loginUser}>
-        <label>Email</label>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "20px" }}>
+      <form onSubmit={loginUser} style={{ display: "flex", flexDirection: "column", width: "300px" }}>
+        <label style={{ textAlign: "center", marginBottom: "10px" }}>Email</label>
         <input
           type="email"
           placeholder="Enter email"
           value={data.email}
           onChange={(e) => setData({ ...data, email: e.target.value })}
+          style={{ marginBottom: "10px", textAlign: "center" }}
         />
-        <label>Password</label>
+        <label style={{ textAlign: "center", marginBottom: "10px" }}>Password</label>
         <input
           type="password"
           placeholder="Enter password"
           value={data.password}
           onChange={(e) => setData({ ...data, password: e.target.value })}
+          style={{ marginBottom: "20px", textAlign: "center" }}
         />
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <button
-            type="submit"
-            style={{
-              background: "none",
-              border: "none",
-              padding: 0,
-              width: "100px",
-              height: "50px",
-            }}
-          >
-            <img
-              src={login}
-              alt="Login"
-              style={{ width: "100%", height: "100%" }}
-            />
-          </button>
-        </div>
+        <button
+          type="submit"
+        >
+          Log In
+        </button>
       </form>
     </div>
   );

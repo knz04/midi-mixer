@@ -15,23 +15,15 @@ export default function Home() {
     <div>
       <div>
         <Link to="/login">
-          <button>
-            <img
-              src={login}
-              alt="Sign Up"
-              style={{ width: "150px", height: "75px" }}
-            />
+          <button style={{ width: "150px", height: "75px" }}>
+            Log In
           </button>
         </Link>
       </div>
       <div>
         <Link to="/register">
-          <button>
-            <img
-              src={signup}
-              alt="Sign Up"
-              style={{ width: "150px", height: "75px" }}
-            />
+          <button style={{ width: "150px", height: "75px" }}>
+            Sign In
           </button>
         </Link>
       </div>

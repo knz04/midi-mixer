@@ -30,33 +30,34 @@ export default function Register() {
 
   return (
     <div>
-      <form onSubmit={registerUser}>
-        <label>Name</label>
+      <form onSubmit={registerUser} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px' }}>
+        <label style={{ marginBottom: '10px' }}>Name</label>
         <input
           type="text"
-          placeholder="Enter name"
+          placeholder="Enter Name"
           value={data.name}
           onChange={(e) => setData({ ...data, name: e.target.value })}
+          style={{ textAlign: 'center', marginBottom: '10px' }}
         />
-        <label>Email</label>
+        <label style={{ marginBottom: '10px' }}>Email</label>
         <input
           type="email"
-          placeholder="Enter email"
+          placeholder="Enter Email"
           value={data.email}
           onChange={(e) => setData({ ...data, email: e.target.value })}
+          style={{ textAlign: 'center', marginBottom: '10px' }}
         />
-        <label>Password</label>
+        <label style={{ marginBottom: '10px' }}>Password</label>
         <input
           type="password"
-          placeholder="Enter password"
+          placeholder="Enter Password"
           value={data.password}
           onChange={(e) => setData({ ...data, password: e.target.value })}
+          style={{ textAlign: 'center', marginBottom: '10px' }}
         />
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <button type="submit" style={{ background: 'none', border: 'none', padding: 0, width: '100px', height: '50px' }}>
-            <img src="src/assets/signup.png" alt="Login" style={{ width: '100%', height: '100%' }} />
-          </button>
-          </div>
+        <button type="submit" style={{ marginTop: '20px', padding: '10px 20px', cursor: 'pointer' }}>
+          Sign In
+        </button>
       </form>
     </div>
   );

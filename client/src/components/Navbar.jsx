@@ -4,7 +4,6 @@ import { useContext } from "react";
 import { UserContext } from "../../context/userContext";
 import toast from "react-hot-toast";
 import logo from "../assets/logo.png";
-import logoutIcon from "../assets/logout.png"; // Import logout icon
 
 const Navbar = () => {
     const { user, setUser } = useContext(UserContext); // Access user context
@@ -25,13 +24,13 @@ const Navbar = () => {
 
     return (
         <nav style={{ display: "block", justifyContent: "space-between", alignItems: "center" }}>
-            <img src={logo} alt="MIDI Mixer Logo" style={{ height: "100px" }} />
-            <div style={{ position: "absolute", top: "10px", right: "10px" }}>
+            <h1 style={{ fontSize: "2rem", margin: "0" }}>SketchMIDI</h1>
+            <div style={{ position: "absolute", top: "20px", right: "10px" }}>
                 {/* Conditionally show buttons based on user's login status */}
                 {user ? (
                     <>
-                        <button onClick={handleLogout} style={{ background: "none", border: "none" }}>
-                            <img src={logoutIcon} alt="Logout" style={{ height: "40px" }} />
+                        <button onClick={handleLogout} style={{ background: "none", border: "none", fontSize: "1rem", cursor: "pointer" }}>
+                            Log Out
                         </button>
                     </>
                 ) : null}
