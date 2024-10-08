@@ -18,8 +18,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/api/auth", authRoutes);
-app.use("/api/presets", presetRoutes);
+app.use("/", authRoutes);
+app.use("/presets", presetRoutes);
 
 const PORT = process.env.PORT | 8000;
 app.listen(PORT, () => {

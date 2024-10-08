@@ -1,7 +1,7 @@
-const Preset = require(".../models/preset");
-const User = require(".../models/user");
+const Preset = require("../models/preset");
+const User = require("../models/user");
 
-export const createPreset = async (req, res) => {
+const createPreset = async (req, res) => {
   try {
     const { presetName, description, channels } = req.body;
     const userId = req.user._id;
@@ -36,6 +36,60 @@ export const createPreset = async (req, res) => {
   }
 };
 
+const getPreset = async (req, res) => {
+  try {
+    const presets = await Preset.find({ userId: req.params.userId });
+    res.status(200).json(presets);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const updatePreset = async (req, res) => {
+  try {
+    const { presetName, description, channels } = req.body;
+
+    // check if preset exists
+    const id = req.params.id;
+    const presetExist = await Preset.findById(id);
+    if (!presetExist) {
+      return res.json({
+        error: "Preset not found",
+      });
+    }
+
+    // update preset data
+    const updatedPreset = await Preset.findByIdAndUpdate(
+      req.params.id,
+      { presetName, description, channels },
+      { new: true }
+    );
+    res.status(200).json(updatedPreset);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const deletePreset = async (req, res) => {
+  try {
+    const preset = await Preset.findByIdAndDelete(req.params.id);
+    // check if preset exists
+    const id = req.params.id;
+    const presetExist = await Preset.findById(id);
+    if (!presetExist) {
+      return res.json({
+        error: "Preset not found",
+      });
+    }
+    res.status(200).json("Preset deleted successfully");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   createPreset,
+  getPreset,
+  updatePreset,
+  deletePreset,
 };
