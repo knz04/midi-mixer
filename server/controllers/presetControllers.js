@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const createPreset = async (req, res) => {
   try {
     const { presetName, description, channels } = req.body;
-    const userId = req.user._id;
+    // const userId = req.user._id;
 
     // validate required fields
     if (!presetName || !channels || channels.length == 0) {
@@ -27,7 +27,7 @@ const createPreset = async (req, res) => {
     const preset = await Preset.create({
       presetName,
       description,
-      userId,
+      //   userId,
       channels,
     });
 
