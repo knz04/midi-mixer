@@ -1,5 +1,6 @@
 const Preset = require("../models/preset");
 const User = require("../models/user");
+const jwt = require("jsonwebtoken");
 
 const createPreset = async (req, res) => {
   try {
@@ -36,12 +37,31 @@ const createPreset = async (req, res) => {
   }
 };
 
-const getPreset = async (req, res) => {
-  try {
-    const presets = await Preset.find({ userId: req.params.userId });
-    res.status(200).json(presets);
-  } catch (error) {
-    console.log(error);
+const getPreset = (req, res) => {
+  const { token } = req.cookies;
+
+  if (token) {
+    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, user) => {
+      if (err) {
+        return res.status(401).json({ error: "Invalid token." });
+      }
+
+      // user.id will give you the userId from the token
+      const userId = user.id;
+
+      try {
+        // Fetch presets for the user
+        const presets = await Preset.find({ userId });
+
+        // Return the presets
+        res.json(presets);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to retrieve presets." });
+      }
+    });
+  } else {
+    res.status(401).json({ error: "No token provided." });
   }
 };
 
