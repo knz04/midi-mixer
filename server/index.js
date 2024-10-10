@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const authRoutes = require("./routes/authRoutes");
 const presetRoutes = require("./routes/presetRoutes");
+const deviceRoutes = require("./routes/deviceRoutes");
 
 // database connection
 mongoose
@@ -20,6 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/", authRoutes);
 app.use("/presets", presetRoutes);
+app.use("/devices", deviceRoutes);
 
 const PORT = process.env.PORT | 8000;
 app.listen(PORT, () => {

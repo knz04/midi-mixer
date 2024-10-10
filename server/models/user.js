@@ -11,7 +11,13 @@ const userSchema = new Schema({
   presets: [
     {
       type: Schema.Types.ObjectId,
-      ref: "Preset", // Reference to the 'Preset' model
+      ref: "Preset",
+    },
+  ],
+  devices: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Device",
     },
   ],
 });

@@ -94,13 +94,13 @@ const deletePreset = async (req, res) => {
   try {
     const preset = await Preset.findByIdAndDelete(req.params.id);
     // check if preset exists
-    const id = req.params.id;
-    const presetExist = await Preset.findById(id);
-    if (!presetExist) {
-      return res.json({
-        error: "Preset not found",
-      });
-    }
+    // const id = req.params.id;
+    // const presetExist = await Preset.findById(id);
+    // if (!presetExist) {
+    //   return res.json({
+    //     error: "Preset not found",
+    //   });
+    // }
     res.status(200).json("Preset deleted successfully");
   } catch (error) {
     console.log(error);
