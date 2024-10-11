@@ -29,31 +29,36 @@ export default function PresetList() {
     fetchPresets();
   }, []);
 
-  // Function to handle preset selection and trigger the API
-  const handlePresetChange = async (event) => {
-    const selectedPresetId = event.target.value;
-    console.log("selectedPresetId: ", selectedPresetId);
-    setSelectedPreset(selectedPresetId);
+  // Load the selected preset from localStorage when the component mounts
+  useEffect(() => {
+    const savedPresetId = localStorage.getItem("selectedPresetId");
+    if (savedPresetId) {
+      setSelectedPreset(savedPresetId);
+      fetchPresetDetails(savedPresetId);
+    }
+  }, []);
+
+  // Function to fetch preset details by preset ID
+  const fetchPresetDetails = async (presetId) => {
     try {
-      // Fetch the selected preset using the selectedPresetId
-      const response = await axios.get(
-        `/presets/get-preset/${selectedPresetId}`,
-        {
-          withCredentials: true,
-        }
-      );
-
-      console.log("Fetched preset data:", response.data); // Log the response data
+      const response = await axios.get(`/presets/get-preset/${presetId}`, {
+        withCredentials: true,
+      });
+      setFetchedPreset(response.data);
       toast.success("Preset fetched successfully!");
-
-      // If you need to do something with the fetched preset data,
-      // you can set it to state or handle it accordingly.
-      setFetchedPreset(response.data); // Uncomment if needed
-      console.log("Fetched preset: ", fetchedPreset);
     } catch (error) {
       console.error("Error fetching preset:", error);
       toast.error("Failed to fetch preset.");
     }
+  };
+
+  // Function to handle preset selection and trigger the API
+  const handlePresetChange = async (event) => {
+    const selectedPresetId = event.target.value;
+    setSelectedPreset(selectedPresetId);
+    localStorage.setItem("selectedPresetId", selectedPresetId); // Save selected preset to localStorage
+
+    fetchPresetDetails(selectedPresetId);
   };
 
   // Toggle form visibility
