@@ -16,7 +16,6 @@ export default function PresetList() {
   const fetchPresets = async () => {
     try {
       const response = await axios.get("/presets/:id", {
-        // Corrected the endpoint here
         withCredentials: true,
       });
       setPresets(response.data);
@@ -124,6 +123,10 @@ export default function PresetList() {
           onUpdate={() => {
             fetchPresetDetails(selectedPreset); // Re-fetch the preset details
             fetchPresets(); // Re-fetch the preset list after editing
+          }}
+          onDelete={() => {
+            fetchPresets(); // Call fetchPresets after deletion
+            setFetchedPreset(""); // Hide PresetDetails
           }}
         />
       )}

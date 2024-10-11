@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-export default function EditPreset({ preset, onClose, onUpdate }) {
+export default function EditPreset({ preset, onClose, onUpdate, onDelete }) {
   const [presetName, setPresetName] = useState(preset.presetName);
   const [description, setDescription] = useState(preset.description);
   const [channels, setChannels] = useState([...preset.channels]);
@@ -30,6 +30,21 @@ export default function EditPreset({ preset, onClose, onUpdate }) {
     } catch (error) {
       console.error("Error updating preset:", error);
       toast.error("Failed to update preset.");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm("Are you sure you want to delete this preset?")) {
+      try {
+        await axios.delete(`/presets/${preset._id}`, { withCredentials: true });
+        toast.success("Preset deleted successfully!");
+        localStorage.removeItem("selectedPresetId"); // Clear local storage
+        onDelete(); // Trigger refresh on the parent component
+        onClose(); // Close the edit form
+      } catch (error) {
+        console.error("Error deleting preset:", error);
+        toast.error("Failed to delete preset.");
+      }
     }
   };
 
@@ -97,6 +112,9 @@ export default function EditPreset({ preset, onClose, onUpdate }) {
         <button type="submit">Save Changes</button>
         <button type="button" onClick={onClose}>
           Cancel
+        </button>
+        <button type="button" onClick={handleDelete}>
+          Delete Preset
         </button>
       </form>
     </div>
