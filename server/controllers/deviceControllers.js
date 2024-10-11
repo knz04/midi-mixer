@@ -1,45 +1,73 @@
 const User = require("../models/user");
 const Device = require("../models/device");
+const jwt = require("jsonwebtoken");
 
 const createDevice = async (req, res) => {
-  try {
-    const { deviceName, macAdd, userId } = req.body;
+  const { token } = req.cookies;
+  const { deviceName, macAdd, userId } = req.body;
 
-    // validate required fields
-    if (!deviceName) {
-      return res.json({
-        error: "Device name required.",
-      });
-    }
+  if (token) {
+    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, user) => {
+      if (err) {
+        return rest.status(401).json({ error: "Invalid token." });
+      }
 
-    // check if device name already exists
-    const exist = await Device.findOne({ deviceName });
-    if (exist) {
-      return res.json({
-        error:
-          "This device name is already taken. Please choose a different name.",
-      });
-    }
+      // obtaining user id from token
+      userId = user.id;
 
-    // create device in database
-    const device = await Device.create({
-      deviceName,
-      macAdd,
-      userId,
+      try {
+        // validate required fields
+        if (!deviceName) {
+          return res.json({
+            error: "Device name required.",
+          });
+        }
+
+        // check if device name already exists
+        const exist = await Device.findOne({ deviceName });
+        if (exist) {
+          return res.json({
+            error:
+              "This device name is already taken. Please choose a different name.",
+          });
+        }
+
+        // create device in database
+        const device = await Device.create({
+          deviceName,
+          macAdd,
+          userId,
+        });
+
+        return res.json(device);
+      } catch (error) {
+        console.log(error);
+      }
     });
-
-    return res.json(device);
-  } catch (error) {
-    console.log(error);
+  } else {
+    res.status(401).json({ error: "No token provided." });
   }
 };
 
 const getDevice = async (req, res) => {
-  try {
-    const devices = await Device.find({ userId: req.params.userId });
-    res.status(200).json(devices);
-  } catch (error) {
-    console.log(error);
+  const { token } = req.cookies;
+
+  if (token) {
+    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, user) => {
+      if (err) {
+        return res.status(401).json({ error: "Invalid token." });
+      }
+      const userId = user.id;
+
+      try {
+        const devices = await Device.find({ userId });
+        res.status(200).json(devices);
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  } else {
+    res.status(401).json({ error: "No token provided." });
   }
 };
 
@@ -136,6 +164,16 @@ const removePreset = async (req, res) => {
   }
 };
 
+const getDeviceId = async (req, res) => {
+  try {
+    const deviceId = req.params.id;
+    res.status(200).json(deviceId);
+  } catch (error) {
+    console.log(error);
+    res.status(200);
+  }
+};
+
 module.exports = {
   createDevice,
   getDevice,
@@ -143,4 +181,5 @@ module.exports = {
   deleteDevice,
   loadPreset,
   removePreset,
+  getDeviceId,
 };

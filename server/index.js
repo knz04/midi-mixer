@@ -18,6 +18,12 @@ mongoose
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Your frontend URL
+    credentials: true, // Allow cookies
+  })
+);
 
 app.use("/", authRoutes);
 app.use("/presets", presetRoutes);

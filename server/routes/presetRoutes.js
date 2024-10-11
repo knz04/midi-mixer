@@ -6,6 +6,7 @@ const {
   getPreset,
   updatePreset,
   deletePreset,
+  getPresetId,
 } = require("../controllers/presetControllers");
 
 router.use(
@@ -19,5 +20,6 @@ router.post("/new", createPreset);
 router.get("/:userId", getPreset);
 router.put("/:id", updatePreset);
 router.delete("/:id", deletePreset);
+router.get("/get-preset/:id", getPresetId);
 
 module.exports = router;

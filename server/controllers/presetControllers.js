@@ -3,37 +3,53 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 
 const createPreset = async (req, res) => {
-  try {
-    const { presetName, description, channels } = req.body;
-    // const userId = req.user._id;
+  const { token } = req.cookies; // Extract token from cookies
 
-    // validate required fields
-    if (!presetName || !channels || channels.length == 0) {
-      return res.json({
-        error: "Preset name and channels are required.",
-      });
-    }
+  if (token) {
+    // Verify the token
+    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, user) => {
+      if (err) {
+        return res.status(401).json({ error: "Invalid token." });
+      }
 
-    // check if preset name already exists
-    const exist = await Preset.findOne({ presetName });
-    if (exist) {
-      return res.json({
-        error:
-          "This preset name is already taken. Please choose a different name.",
-      });
-    }
+      // Extract userId from the token
+      const userId = user.id;
 
-    // create preset in database
-    const preset = await Preset.create({
-      presetName,
-      description,
-      //   userId,
-      channels,
+      try {
+        const { presetName, description, channels } = req.body;
+
+        // Validate required fields
+        if (!presetName || !channels || channels.length === 0) {
+          return res.json({
+            error: "Preset name and channels are required.",
+          });
+        }
+
+        // Check if the preset name already exists
+        const exist = await Preset.findOne({ presetName });
+        if (exist) {
+          return res.json({
+            error:
+              "This preset name is already taken. Please choose a different name.",
+          });
+        }
+
+        // Create the preset in the database with the userId
+        const preset = await Preset.create({
+          presetName,
+          description,
+          userId, // Add userId here
+          channels,
+        });
+
+        return res.json(preset);
+      } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Server error" });
+      }
     });
-
-    return res.json(preset);
-  } catch (error) {
-    console.log(error);
+  } else {
+    return res.status(401).json({ error: "No token provided." });
   }
 };
 
@@ -107,9 +123,20 @@ const deletePreset = async (req, res) => {
   }
 };
 
+const getPresetId = async (req, res) => {
+  try {
+    const presetId = req.params.id;
+    res.status(200).json(presetId);
+  } catch (error) {
+    console.log(error);
+    res.status(200);
+  }
+};
+
 module.exports = {
   createPreset,
   getPreset,
   updatePreset,
   deletePreset,
+  getPresetId,
 };

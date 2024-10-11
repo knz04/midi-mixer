@@ -8,6 +8,7 @@ const {
   deleteDevice,
   loadPreset,
   removePreset,
+  getDeviceId,
 } = require("../controllers/deviceControllers");
 
 router.use(
@@ -21,6 +22,7 @@ router.post("/new", createDevice);
 router.get("/:userId", getDevice);
 router.put("/:id", updateDevice);
 router.delete("/:id", deleteDevice);
+router.get("/get-device/:id", getDeviceId);
 
 // preset management
 router.put("/add-preset/:id", loadPreset);
