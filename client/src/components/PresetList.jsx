@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import AddPreset from "./AddPreset";
-import EditPreset from "./EditPreset"; // Import the EditPreset component
+import EditPreset from "./EditPreset";
+import PresetDetails from "./PresetDetails"; // Import PresetDetails
 
 export default function PresetList() {
   const [presets, setPresets] = useState([]);
@@ -12,14 +13,13 @@ export default function PresetList() {
   const [showForm, setShowForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false); // Toggle edit form visibility
 
-  // Lifted fetchPresets function outside of useEffect so it can be reused
   const fetchPresets = async () => {
     try {
       const response = await axios.get("/presets/:id", {
+        // Corrected the endpoint here
         withCredentials: true,
       });
       setPresets(response.data);
-      toast.success("Presets fetched successfully!");
     } catch (error) {
       console.error(error);
       toast.error("Failed to fetch presets.");
@@ -46,7 +46,6 @@ export default function PresetList() {
         withCredentials: true,
       });
       setFetchedPreset(response.data);
-      toast.success("Preset fetched successfully!");
     } catch (error) {
       console.error("Error fetching preset:", error);
       toast.error("Failed to fetch preset.");
@@ -73,6 +72,11 @@ export default function PresetList() {
     setShowEditForm(false);
   };
 
+  // New function to fetch presets after creating one
+  const handlePresetCreated = () => {
+    fetchPresets(); // Refresh presets list
+  };
+
   if (loading) {
     return <div>Loading presets...</div>;
   }
@@ -97,28 +101,19 @@ export default function PresetList() {
 
       <button onClick={handleOpenForm}>Create a new preset</button>
 
-      {showForm && <AddPreset onClose={handleCloseForm} />}
+      {showForm && (
+        <AddPreset
+          onClose={handleCloseForm}
+          onPresetCreated={handlePresetCreated}
+        />
+      )}
 
+      {/* Use PresetDetails component to display fetchedPreset */}
       {fetchedPreset && (
-        <div>
-          <strong>Description:</strong> {fetchedPreset.description}
-          <h3>Channels:</h3>
-          <ul>
-            {fetchedPreset.channels.map((channel, index) => (
-              <li key={channel._id}>
-                <strong>Channel Number:</strong> {index + 1}
-                <br />
-                <strong>Fader:</strong> {channel.fader}
-                <br />
-                <strong>Rotary:</strong> {channel.rotary}
-                <br />
-                <strong>Mute:</strong> {channel.button ? "On" : "Off"}
-              </li>
-            ))}
-          </ul>
-          {/* Show the "Edit Preset" button */}
-          <button onClick={handleOpenEditForm}>Edit Preset</button>
-        </div>
+        <PresetDetails
+          fetchedPreset={fetchedPreset}
+          handleOpenEditForm={handleOpenEditForm}
+        />
       )}
 
       {/* Render the EditPreset component when editing */}

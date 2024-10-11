@@ -35,7 +35,6 @@ export default function EditPreset({ preset, onClose, onUpdate }) {
 
   return (
     <div>
-      <h2>Edit Preset</h2>
       <form onSubmit={handleSubmit}>
         <label>
           Preset Name:
