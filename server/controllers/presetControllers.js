@@ -124,12 +124,32 @@ const deletePreset = async (req, res) => {
 };
 
 const getPresetId = async (req, res) => {
-  try {
-    const presetId = req.params.id;
-    res.status(200).json(presetId);
-  } catch (error) {
-    console.log(error);
-    res.status(200);
+  const { token } = req.cookies;
+
+  if (token) {
+    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, user) => {
+      if (err) {
+        return res.status(401).json({ error: "Invalid token." });
+      }
+
+      try {
+        const presetId = req.params.id;
+        // Fetch preset by ID
+        const fetchedPreset = await Preset.findById(presetId); // Pass presetId directly
+
+        // Check if the preset exists
+        if (!fetchedPreset) {
+          return res.status(404).json({ error: "Preset not found." });
+        }
+
+        res.json(fetchedPreset);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Server error" }); // Return an error message
+      }
+    });
+  } else {
+    res.status(401).json({ error: "No token provided." });
   }
 };
 

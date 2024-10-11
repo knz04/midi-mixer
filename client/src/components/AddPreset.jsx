@@ -1,14 +1,15 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 const AddPreset = ({ onClose }) => {
   const [presetName, setPresetName] = useState("");
   const [description, setDescription] = useState("");
   const [channels, setChannels] = useState([
-    { rotary: 0, fader: 0, mute: false },
+    { rotary: 0, fader: 0, button: false }, // Changed mute to button
   ]);
 
   const handleAddChannel = () => {
-    setChannels([...channels, { rotary: 0, fader: 0, mute: false }]);
+    setChannels([...channels, { rotary: 0, fader: 0, button: false }]); // Changed mute to button
   };
 
   const handleSubmit = async (e) => {
@@ -18,7 +19,12 @@ const AddPreset = ({ onClose }) => {
     const presetData = {
       presetName,
       description,
-      channels,
+      channels: channels.map((channel, index) => ({
+        channel: index + 1, // Assuming channel numbers start from 1
+        button: channel.button, // Using button instead of mute
+        fader: channel.fader,
+        rotary: channel.rotary,
+      })),
     };
 
     try {
@@ -35,9 +41,11 @@ const AddPreset = ({ onClose }) => {
       if (response.ok) {
         const data = await response.json();
         console.log("Preset created:", data);
+        toast.success("Preset created successfully!");
         onClose(); // Close the form after successful creation
       } else {
         console.error("Failed to create preset");
+        toast.error("Failed to create preset");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -67,6 +75,7 @@ const AddPreset = ({ onClose }) => {
           </div>
           <div>
             <label>Channels</label>
+            <p>(Insert import from device button here.)</p>
             {channels.map((channel, index) => (
               <div key={index}>
                 <label>Rotary Potentiometer</label>
@@ -75,8 +84,11 @@ const AddPreset = ({ onClose }) => {
                   value={channel.rotary}
                   onChange={(e) =>
                     setChannels(
-                      channels.map((ch, i) =>
-                        i === index ? { ...ch, rotary: e.target.value } : ch
+                      channels.map(
+                        (ch, i) =>
+                          i === index
+                            ? { ...ch, rotary: Number(e.target.value) }
+                            : ch // Convert to number
                       )
                     )
                   }
@@ -88,8 +100,11 @@ const AddPreset = ({ onClose }) => {
                   value={channel.fader}
                   onChange={(e) =>
                     setChannels(
-                      channels.map((ch, i) =>
-                        i === index ? { ...ch, fader: e.target.value } : ch
+                      channels.map(
+                        (ch, i) =>
+                          i === index
+                            ? { ...ch, fader: Number(e.target.value) }
+                            : ch // Convert to number
                       )
                     )
                   }
@@ -99,11 +114,14 @@ const AddPreset = ({ onClose }) => {
                   Mute
                   <input
                     type="checkbox"
-                    checked={channel.mute}
+                    checked={channel.button} // Changed to button
                     onChange={(e) =>
                       setChannels(
-                        channels.map((ch, i) =>
-                          i === index ? { ...ch, mute: e.target.checked } : ch
+                        channels.map(
+                          (ch, i) =>
+                            i === index
+                              ? { ...ch, button: e.target.checked }
+                              : ch // Changed to button
                         )
                       )
                     }

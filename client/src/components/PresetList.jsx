@@ -7,7 +7,7 @@ export default function PresetList() {
   const [presets, setPresets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPreset, setSelectedPreset] = useState("");
-  const [fetchedPreset, setFetchedPreset] = useState(null);
+  const [fetchedPreset, setFetchedPreset] = useState("");
   const [showForm, setShowForm] = useState(false); // For controlling the modal visibility
 
   // Fetch presets from the backend when the component mounts
@@ -32,6 +32,7 @@ export default function PresetList() {
   // Function to handle preset selection and trigger the API
   const handlePresetChange = async (event) => {
     const selectedPresetId = event.target.value;
+    console.log("selectedPresetId: ", selectedPresetId);
     setSelectedPreset(selectedPresetId);
     try {
       // Fetch the selected preset using the selectedPresetId
@@ -48,6 +49,7 @@ export default function PresetList() {
       // If you need to do something with the fetched preset data,
       // you can set it to state or handle it accordingly.
       setFetchedPreset(response.data); // Uncomment if needed
+      console.log("Fetched preset: ", fetchedPreset);
     } catch (error) {
       console.error("Error fetching preset:", error);
       toast.error("Failed to fetch preset.");
@@ -91,6 +93,26 @@ export default function PresetList() {
 
       {/* Show the form modal when 'showForm' is true */}
       {showForm && <AddPreset onClose={handleCloseForm} />}
+
+      {fetchedPreset && (
+        <div>
+          <strong>Description:</strong> {fetchedPreset.description}
+          <h3>Channels:</h3>
+          <ul>
+            {fetchedPreset.channels.map((channel, index) => (
+              <li key={channel._id}>
+                <strong>Channel Number:</strong> {index + 1}
+                <br />
+                <strong>Fader:</strong> {channel.fader}
+                <br />
+                <strong>Rotary:</strong> {channel.rotary}
+                <br />
+                <strong>Mute:</strong> {channel.button ? "On" : "Off"}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
