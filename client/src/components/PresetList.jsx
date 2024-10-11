@@ -1,35 +1,37 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import AddPreset from "./AddPreset"; // Import the form component
+import AddPreset from "./AddPreset";
+import EditPreset from "./EditPreset"; // Import the EditPreset component
 
 export default function PresetList() {
   const [presets, setPresets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPreset, setSelectedPreset] = useState("");
   const [fetchedPreset, setFetchedPreset] = useState("");
-  const [showForm, setShowForm] = useState(false); // For controlling the modal visibility
+  const [showForm, setShowForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false); // Toggle edit form visibility
 
-  // Fetch presets from the backend when the component mounts
+  // Lifted fetchPresets function outside of useEffect so it can be reused
+  const fetchPresets = async () => {
+    try {
+      const response = await axios.get("/presets/:id", {
+        withCredentials: true,
+      });
+      setPresets(response.data);
+      toast.success("Presets fetched successfully!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to fetch presets.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchPresets = async () => {
-      try {
-        const response = await axios.get("/presets/:id", {
-          withCredentials: true, // Ensure credentials are sent if required by the backend
-        });
-        setPresets(response.data);
-      } catch (error) {
-        console.error(error);
-        toast.error("Failed to fetch presets.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchPresets();
   }, []);
 
-  // Load the selected preset from localStorage when the component mounts
   useEffect(() => {
     const savedPresetId = localStorage.getItem("selectedPresetId");
     if (savedPresetId) {
@@ -38,7 +40,6 @@ export default function PresetList() {
     }
   }, []);
 
-  // Function to fetch preset details by preset ID
   const fetchPresetDetails = async (presetId) => {
     try {
       const response = await axios.get(`/presets/get-preset/${presetId}`, {
@@ -52,25 +53,26 @@ export default function PresetList() {
     }
   };
 
-  // Function to handle preset selection and trigger the API
-  const handlePresetChange = async (event) => {
+  const handlePresetChange = (event) => {
     const selectedPresetId = event.target.value;
     setSelectedPreset(selectedPresetId);
-    localStorage.setItem("selectedPresetId", selectedPresetId); // Save selected preset to localStorage
-
+    localStorage.setItem("selectedPresetId", selectedPresetId);
     fetchPresetDetails(selectedPresetId);
   };
 
-  // Toggle form visibility
   const handleOpenForm = () => {
     setShowForm(true);
   };
 
-  const handleCloseForm = () => {
-    setShowForm(false);
+  const handleOpenEditForm = () => {
+    setShowEditForm(true);
   };
 
-  // Show a loading message if presets are still being fetched
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setShowEditForm(false);
+  };
+
   if (loading) {
     return <div>Loading presets...</div>;
   }
@@ -93,10 +95,8 @@ export default function PresetList() {
         </select>
       )}
 
-      {/* Button to create a new preset */}
       <button onClick={handleOpenForm}>Create a new preset</button>
 
-      {/* Show the form modal when 'showForm' is true */}
       {showForm && <AddPreset onClose={handleCloseForm} />}
 
       {fetchedPreset && (
@@ -116,7 +116,21 @@ export default function PresetList() {
               </li>
             ))}
           </ul>
+          {/* Show the "Edit Preset" button */}
+          <button onClick={handleOpenEditForm}>Edit Preset</button>
         </div>
+      )}
+
+      {/* Render the EditPreset component when editing */}
+      {showEditForm && (
+        <EditPreset
+          preset={fetchedPreset}
+          onClose={handleCloseForm}
+          onUpdate={() => {
+            fetchPresetDetails(selectedPreset); // Re-fetch the preset details
+            fetchPresets(); // Re-fetch the preset list after editing
+          }}
+        />
       )}
     </div>
   );

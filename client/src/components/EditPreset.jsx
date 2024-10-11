@@ -1,28 +1,32 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-export default function EditPreset({ preset, onClose }) {
-  const [presetData, setPresetData] = useState(preset); // Initialize with the passed preset prop
+export default function EditPreset({ preset, onClose, onUpdate }) {
+  const [presetName, setPresetName] = useState(preset.presetName);
+  const [description, setDescription] = useState(preset.description);
+  const [channels, setChannels] = useState([...preset.channels]);
 
-  // Function to handle input changes
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setPresetData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+  // Handle changes to channels
+  const handleChannelChange = (index, field, value) => {
+    const updatedChannels = channels.map((channel, i) =>
+      i === index ? { ...channel, [field]: value } : channel
+    );
+    setChannels(updatedChannels);
   };
 
-  // Function to handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     try {
-      const response = await axios.put(`/presets/${preset._id}`, presetData, {
-        withCredentials: true,
-      });
+      const response = await axios.put(
+        `/presets/${preset._id}`,
+        { presetName, description, channels },
+        { withCredentials: true }
+      );
       toast.success("Preset updated successfully!");
-      onClose(); // Close the edit modal after successful update
+      onUpdate(); // Trigger update on the parent component
+      onClose(); // Close the edit form
     } catch (error) {
       console.error("Error updating preset:", error);
       toast.error("Failed to update preset.");
@@ -33,76 +37,69 @@ export default function EditPreset({ preset, onClose }) {
     <div>
       <h2>Edit Preset</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>
-            Preset Name:
-            <input
-              type="text"
-              name="presetName"
-              value={presetData.presetName}
-              onChange={handleChange}
-              required
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Description:
-            <textarea
-              name="description"
-              value={presetData.description}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        {/* Channels can be a more complex input depending on your data structure */}
-        {presetData.channels.map((channel, index) => (
+        <label>
+          Preset Name:
+          <input
+            type="text"
+            value={presetName}
+            onChange={(e) => setPresetName(e.target.value)}
+          />
+        </label>
+        <br />
+        <label>
+          Description:
+          <input
+            type="text"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </label>
+        <br />
+        <h3>Channels:</h3>
+        {channels.map((channel, index) => (
           <div key={index}>
-            <h4>Channel {index + 1}</h4>
+            <strong>Channel {index + 1}</strong>
+            <br />
             <label>
               Fader:
               <input
                 type="number"
-                name="fader"
                 value={channel.fader}
-                onChange={(e) => {
-                  const updatedChannels = [...presetData.channels];
-                  updatedChannels[index].fader = e.target.value;
-                  setPresetData({ ...presetData, channels: updatedChannels });
-                }}
+                onChange={(e) =>
+                  handleChannelChange(index, "fader", e.target.value)
+                }
               />
             </label>
+            <br />
             <label>
               Rotary:
               <input
                 type="number"
-                name="rotary"
                 value={channel.rotary}
-                onChange={(e) => {
-                  const updatedChannels = [...presetData.channels];
-                  updatedChannels[index].rotary = e.target.value;
-                  setPresetData({ ...presetData, channels: updatedChannels });
-                }}
+                onChange={(e) =>
+                  handleChannelChange(index, "rotary", e.target.value)
+                }
               />
             </label>
+            <br />
             <label>
               Mute:
               <input
                 type="checkbox"
-                name="button"
                 checked={channel.button}
-                onChange={(e) => {
-                  const updatedChannels = [...presetData.channels];
-                  updatedChannels[index].button = e.target.checked;
-                  setPresetData({ ...presetData, channels: updatedChannels });
-                }}
+                onChange={(e) =>
+                  handleChannelChange(index, "button", e.target.checked)
+                }
               />
             </label>
           </div>
         ))}
-        <button type="submit">Update Preset</button>
+        <br />
+        <button type="submit">Save Changes</button>
+        <button type="button" onClick={onClose}>
+          Cancel
+        </button>
       </form>
-      <button onClick={onClose}>Cancel</button>
     </div>
   );
 }
