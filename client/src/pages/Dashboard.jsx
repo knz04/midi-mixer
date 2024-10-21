@@ -12,7 +12,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div style={{ height: "100vh", width: "100vw " }}>
+    <div style={{ height: "100vh", width: "100vw" }}>
       <div style={{ position: "absolute", top: 20, right: 140 }}>
         {!!user && <h1>Hi, {user.name}!</h1>}
       </div>

@@ -3,7 +3,6 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
-import login from "../assets/login2.png";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -32,23 +31,25 @@ export default function Login() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "20px" }}>
-      <form onSubmit={loginUser} style={{ display: "flex", flexDirection: "column", width: "300px" }}>
-        <label style={{ textAlign: "center", marginBottom: "10px" }}>Email</label>
+    <div className="flex flex-col items-center mt-5">
+      <form onSubmit={loginUser} className="flex flex-col w-72">
+        <label className="text-center mb-2">Email</label>
         <input
           type="email"
           placeholder="Enter email"
           value={data.email}
           onChange={(e) => setData({ ...data, email: e.target.value })}
-          style={{ marginBottom: "10px", textAlign: "center" }}
+          className="mb-2 text-center"
+          style={{ border: "none", borderBottom: "1px solid" }}
         />
-        <label style={{ textAlign: "center", marginBottom: "10px" }}>Password</label>
+        <label className="text-center mb-2">Password</label>
         <input
           type="password"
           placeholder="Enter password"
           value={data.password}
           onChange={(e) => setData({ ...data, password: e.target.value })}
-          style={{ marginBottom: "20px", textAlign: "center" }}
+          className="mb-5 text-center"
+          style={{ border: "none", borderBottom: "1px solid" }}
         />
         <button
           type="submit"

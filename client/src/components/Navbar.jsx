@@ -22,30 +22,22 @@ const Navbar = () => {
     }
   }
 
-return (
-  <nav
-    style={{
-      display: "block",
-      justifyContent: "space-between",
-      alignItems: "center",
-    }}
-  >
-    <img src={logo} alt="MIDI Mixer Logo" style={{ height: "100px" }} />
-    <div style={{ position: "absolute", top: "10px", right: "10px" }}>
-      {/* Conditionally show buttons based on user's login status */}
-      {user ? (
-        <>
+  return (
+    <nav>
+      <img src={logo} alt="MIDI Mixer Logo" className="h-20" />
+      <div className="absolute top-5 right-4">
+        {/* Conditionally show buttons based on user's login status */}
+        {user && (
           <button
             onClick={handleLogout}
-            style={{ background: "none", border: "none" }}
+            style={{ border: "none", borderBottom: "1px solid" }}
           >
-            <img src={logoutIcon} alt="Logout" style={{ height: "40px" }} />
+            Logout
           </button>
-        </>
-      ) : null}
-    </div>
-  </nav>
-);
+        )}
+      </div>
+    </nav>
+  );
 };
 
 export default Navbar;

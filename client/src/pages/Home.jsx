@@ -13,16 +13,16 @@ export default function Home() {
 
   return (
     <div>
-      <div>
+      <div style={{ marginBottom: "20px" }}>
         <Link to="/login">
-          <button style={{ width: "150px", height: "75px" }}>
+          <button className="w-36 h-18" style={{ border: "none", borderBottom: "1px solid" }}>
             Log In
           </button>
         </Link>
       </div>
       <div>
         <Link to="/register">
-          <button style={{ width: "150px", height: "75px" }}>
+          <button className="w-36 h-18" style={{ border: "none", borderBottom: "1px solid" }}>
             Sign In
           </button>
         </Link>

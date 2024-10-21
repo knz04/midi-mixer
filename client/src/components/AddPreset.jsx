@@ -53,32 +53,34 @@ const AddPreset = ({ onClose }) => {
   };
 
   return (
-    <div className="modal">
-      <div className="modal-content">
-        <h2>Create a New Preset</h2>
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 p-4 sm:p-0">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl"> {/* Changed max-w-md to max-w-4xl */}
+        <h2 className="text-2xl font-bold mb-4">Create a New Preset</h2>
         <form onSubmit={handleSubmit}>
-          <div>
-            <label>Preset Name</label>
+          <div className="mb-4">
+            <label className="block text-gray-700">Preset Name</label>
             <input
               type="text"
               value={presetName}
               onChange={(e) => setPresetName(e.target.value)}
               required
+              className="mt-1 p-2 border border-gray-300 rounded w-full"
             />
           </div>
-          <div>
-            <label>Description</label>
+          <div className="mb-4">
+            <label className="block text-gray-700">Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              className="mt-1 p-2 border border-gray-300 rounded w-full"
             />
           </div>
-          <div>
-            <label>Channels</label>
-            <p>(Insert import from device button here.)</p>
+          <div className="mb-4">
+            <label className="block text-gray-700">Channels</label>
+            <p className="text-sm text-gray-500 mb-2">(Insert import from device button here.)</p>
             {channels.map((channel, index) => (
-              <div key={index}>
-                <label>Rotary Potentiometer</label>
+              <div key={index} className="mb-2">
+                <label className="block text-gray-700">Rotary Potentiometer</label>
                 <input
                   type="number"
                   value={channel.rotary}
@@ -93,8 +95,9 @@ const AddPreset = ({ onClose }) => {
                     )
                   }
                   required
+                  className="mt-1 p-2 border border-gray-300 rounded w-full"
                 />
-                <label>Fader Potentiometer</label>
+                <label className="block text-gray-700 mt-2">Fader Potentiometer</label>
                 <input
                   type="number"
                   value={channel.fader}
@@ -109,8 +112,9 @@ const AddPreset = ({ onClose }) => {
                     )
                   }
                   required
+                  className="mt-1 p-2 border border-gray-300 rounded w-full"
                 />
-                <label>
+                <label className="block text-gray-700 mt-2">
                   Mute
                   <input
                     type="checkbox"
@@ -125,16 +129,30 @@ const AddPreset = ({ onClose }) => {
                         )
                       )
                     }
+                    className="ml-2"
                   />
                 </label>
               </div>
             ))}
-            <button type="button" onClick={handleAddChannel}>
+            <button
+              type="button"
+              onClick={handleAddChannel}
+              className="mt-2 p-2 bg-blue-500 text-white rounded w-full sm:w-auto"
+            >
               Add Channel
             </button>
           </div>
-          <button type="submit">Create Preset</button>
-          <button type="button" onClick={onClose}>
+          <button
+            type="submit"
+            className="mt-4 p-2 bg-green-500 text-white rounded w-full"
+          >
+            Create Preset
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="mt-2 p-2 bg-red-500 text-white rounded w-full"
+          >
             Cancel
           </button>
         </form>

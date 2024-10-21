@@ -41,21 +41,22 @@ const AddDevice = ({ onClose }) => {
   };
 
   return (
-    <div className="modal">
-      <div className="modal-content">
-        <h2>Create a New Device</h2>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>Device Name</label>
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+      <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-4">Create a New Device</h2>
+        <form onSubmit={handleSubmit} className="flex flex-col">
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Device Name</label>
             <input
               type="text"
               value={deviceName}
               onChange={(e) => setDeviceName(e.target.value)}
               required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
           </div>
-          <div>
-            <label>MAC Address</label>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">MAC Address</label>
             <input
               type="text"
               value={macAdd}
@@ -63,10 +64,13 @@ const AddDevice = ({ onClose }) => {
               required
               pattern="^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$" // MAC address validation
               title="Please enter a valid MAC address in the format XX:XX:XX:XX:XX:XX"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
           </div>
-          <button type="submit">Create Device</button>
-          <button type="button" onClick={onClose}>
+          <button type="submit" className="mb-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+            Create Device
+          </button>
+          <button type="button" onClick={onClose} className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">
             Cancel
           </button>
         </form>

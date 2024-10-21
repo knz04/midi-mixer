@@ -81,7 +81,7 @@ export default function PresetList() {
   }
 
   return (
-    <div>
+    <div style={{ marginLeft: "15px" }}>
       <h1>Your Presets</h1>
       {presets.length === 0 ? (
         <p>No presets available.</p>
@@ -98,14 +98,22 @@ export default function PresetList() {
         </select>
       )}
 
-      <button onClick={handleOpenForm}>Create a new preset</button>
-
-      {showForm && (
-        <AddPreset
-          onClose={handleCloseForm}
-          onPresetCreated={handlePresetCreated}
-        />
-      )}
+      <div className="flex items-center">
+        <button
+          onClick={() => setShowForm(!showForm)} // Toggle form visibility
+          className="mr-4 p-2 bg-green-500 text-white rounded"
+        >
+          {showForm ? "Create a new preset" : "Create a new preset"} {/* Change button text */}
+        </button>
+        {showForm && (
+          <div>
+            <AddPreset
+              onClose={handleCloseForm}
+              onPresetCreated={handlePresetCreated}
+            />
+          </div>
+        )}
+      </div>
 
       {/* Use PresetDetails component to display fetchedPreset */}
       {fetchedPreset && (

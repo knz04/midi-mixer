@@ -19,7 +19,7 @@ export default function DeviceList() {
   // Fetch list of devices
   const fetchDevices = async () => {
     try {
-      const response = await axios.get("/devices/:id", {
+      const response = await axios.get("/devices", {
         withCredentials: true,
       });
       setDevices(response.data);
@@ -34,7 +34,7 @@ export default function DeviceList() {
   // Fetch list of presets
   const fetchPresets = async () => {
     try {
-      const response = await axios.get("/presets/:id", {
+      const response = await axios.get("/presets", {
         withCredentials: true,
       });
       setPresets(response.data); // Assuming response.data contains an array of presets
@@ -186,14 +186,18 @@ export default function DeviceList() {
   }
 
   return (
-    <div>
-      <h1>Your Devices</h1>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Your Devices</h1>
       {devices.length === 0 ? (
         <p>No devices available.</p>
       ) : (
         <>
           {/* Dropdown for selecting a device */}
-          <select value={selectedDevice} onChange={handleDeviceChange}>
+          <select
+            value={selectedDevice}
+            onChange={handleDeviceChange}
+            className="mb-4 p-2 border rounded"
+          >
             <option value="" disabled>
               Select a device
             </option>
@@ -209,7 +213,11 @@ export default function DeviceList() {
 
           {/* Preset selection dropdown */}
           {presets.length > 0 && (
-            <select value={selectedPreset} onChange={handlePresetChange}>
+            <select
+              value={selectedPreset}
+              onChange={handlePresetChange}
+              className="mb-4 p-2 border rounded"
+            >
               <option value="" disabled>
                 Select a preset
               </option>
@@ -224,44 +232,61 @@ export default function DeviceList() {
 
           {/* Import and Remove Preset buttons */}
           {selectedDevice && fetchedDevice && (
-            <div>
-              <button onClick={handleImportPreset}>Import Preset</button>
-              <button onClick={handleRemovePreset}>Remove Preset</button>
+            <div className="mb-4">
+              <button
+                onClick={handleImportPreset}
+                className="mr-2 p-2 bg-blue-500 text-white rounded"
+              >
+                Import Preset
+              </button>
+              <button
+                onClick={handleRemovePreset}
+                className="p-2 bg-red-500 text-white rounded"
+              >
+                Remove Preset
+              </button>
             </div>
           )}
 
           {/* Edit Device button that shows up after a device is selected */}
           {selectedDevice && (
-            <button onClick={handleOpenEditForm}>Edit Device</button>
+            <button
+              onClick={handleOpenEditForm}
+              className="mb-4 p-2 bg-yellow-500 text-white rounded"
+            >
+              Edit Device
+            </button>
           )}
         </>
       )}
 
-      {/* Button to add a new device */}
-      <button onClick={handleOpenForm}>Add a new device</button>
+      <div className="flex items-start">
+        {/* Button to add a new device */}
+        <button
+          onClick={() => setShowForm(!showForm)} // Toggle form visibility
+          className="mr-4 p-2 bg-green-500 text-white rounded"
+        >
+          {showForm ? "Add a new" : "Add a new device"} {/* Change button text based on form visibility */}
+        </button>
 
-      {showForm && (
-        <AddDevice
-          onClose={handleCloseForm}
-          onDeviceCreated={handleDeviceCreated} // Refresh devices list after adding a new one
-        />
-      )}
+        {/* Add Device form */}
+        {showForm && (
+          <div className="flex-grow">
+            <AddDevice
+              onClose={handleCloseForm}
+              onDeviceCreated={handleDeviceCreated}
+            />
+          </div>
+        )}
 
-      {/* Render the EditDevice component when editing */}
-      {showEditForm && fetchedDevice && (
-        <EditDevice
-          device={fetchedDevice}
-          onClose={handleCloseForm}
-          onUpdate={() => {
-            fetchDeviceDetails(selectedDevice); // Re-fetch device details
-            fetchDevices(); // Re-fetch device list after editing
-          }}
-          onDelete={() => {
-            fetchDevices(); // Call fetchDevices after deletion
-            setFetchedDevice(null); // Clear selected device
-          }}
-        />
-      )}
+        {/* Edit Device form */}
+        {showEditForm && selectedDevice && (
+          <EditDevice
+            selectedDeviceId={selectedDevice}
+            onClose={handleCloseForm}
+          />
+        )}
+      </div>
     </div>
   );
 }
