@@ -3,43 +3,38 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 
 const createPreset = async (req, res) => {
-  const { token } = req.cookies; // Extract token from cookies
+  const { token } = req.cookies;
 
   if (token) {
-    // Verify the token
     jwt.verify(token, process.env.JWT_SECRET, {}, async (err, user) => {
       if (err) {
         return res.status(401).json({ error: "Invalid token." });
       }
 
-      // Extract userId from the token
       const userId = user.id;
 
       try {
         const { presetName, description, channels } = req.body;
 
-        // Validate required fields
         if (!presetName || !channels || channels.length === 0) {
-          return res.json({
-            error: "Preset name and channels are required.",
-          });
+          return res.json({ error: "Preset name and channels are required." });
         }
 
-        // Check if the preset name already exists
         const exist = await Preset.findOne({ presetName });
         if (exist) {
-          return res.json({
-            error:
-              "This preset name is already taken. Please choose a different name.",
-          });
+          return res.json({ error: "This preset name is already taken." });
         }
 
-        // Create the preset in the database with the userId
         const preset = await Preset.create({
           presetName,
           description,
-          userId, // Add userId here
+          userId,
           channels,
+        });
+
+        // Update user's presets array
+        await User.findByIdAndUpdate(userId, {
+          $push: { presets: preset._id },
         });
 
         return res.json(preset);
@@ -108,18 +103,23 @@ const updatePreset = async (req, res) => {
 
 const deletePreset = async (req, res) => {
   try {
-    const preset = await Preset.findByIdAndDelete(req.params.id);
-    // check if preset exists
-    // const id = req.params.id;
-    // const presetExist = await Preset.findById(id);
-    // if (!presetExist) {
-    //   return res.json({
-    //     error: "Preset not found",
-    //   });
-    // }
+    const presetId = req.params.id;
+
+    // Find and delete the preset
+    const preset = await Preset.findByIdAndDelete(presetId);
+    if (!preset) {
+      return res.status(404).json({ error: "Preset not found" });
+    }
+
+    // Remove the preset ID from the user's presets array
+    await User.findByIdAndUpdate(preset.userId, {
+      $pull: { presets: presetId },
+    });
+
     res.status(200).json("Preset deleted successfully");
   } catch (error) {
     console.log(error);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
