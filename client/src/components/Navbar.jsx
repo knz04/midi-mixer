@@ -39,7 +39,7 @@ const Navbar = () => {
     // </nav>
 
     <nav className="w-screen h-32 md:h-16 mb-4 flex flex-col md:flex-row relative justify-between p-2">
-      <img src={logo} alt="MIDI Mixer Logo" className="h-16 object-contain" />
+      <span className="h-16 object-contain text-2xl font-bold">Midi Mixer</span>
       {user && (
         <div className="flex flex-row items-center justify-center">
           <h1 className="mr-4">Hi, {user.name}!</h1>

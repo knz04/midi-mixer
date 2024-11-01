@@ -11,22 +11,17 @@ export default function Home() {
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center">
-      <div style={{ marginBottom: "20px" }}>
+      <div className="text-4xl font-bold mb-5">Midi Mixer</div>
+      <div className="mb-5">
         <Link to="/login">
-          <button
-            className="w-36 h-18"
-            style={{ border: "none", borderBottom: "1px solid" }}
-          >
+          <button className="w-36 h-12 border-b-2 border-black">
             Log In
           </button>
         </Link>
       </div>
       <div>
         <Link to="/register">
-          <button
-            className="w-36 h-18"
-            style={{ border: "none", borderBottom: "1px solid" }}
-          >
+          <button className="w-36 h-12 border-b-2 border-black">
             Sign Up
           </button>
         </Link>

@@ -30,10 +30,14 @@ export default function Login() {
     }
   };
 
+  const goBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className="flex flex-1 flex-col items-center justify-center">
-      <form onSubmit={loginUser} className="flex flex-col w-72">
-        <label className="text-center mb-2">Email</label>
+      <form onSubmit={loginUser} className="flex flex-col w-72 space-y-4">
+        <label className="text-center mb-1">Email</label>
         <input
           type="email"
           placeholder="Enter email"
@@ -42,7 +46,7 @@ export default function Login() {
           className="mb-2 text-center"
           style={{ border: "none", borderBottom: "1px solid" }}
         />
-        <label className="text-center mb-2">Password</label>
+        <label className="text-center mb-1">Password</label>
         <input
           type="password"
           placeholder="Enter password"
@@ -51,7 +55,12 @@ export default function Login() {
           className="mb-5 text-center"
           style={{ border: "none", borderBottom: "1px solid" }}
         />
-        <button type="submit">Log In</button>
+        <div className="flex justify-between space-x-4">
+          <button type="button" onClick={goBack}>
+            Back
+          </button>
+          <button type="submit">Log In</button>
+        </div>
       </form>
     </div>
   );
