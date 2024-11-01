@@ -23,19 +23,37 @@ const Navbar = () => {
   }
 
   return (
-    <nav>
-      <img src={logo} alt="MIDI Mixer Logo" className="h-20" />
-      <div className="absolute top-5 right-4">
-        {/* Conditionally show buttons based on user's login status */}
-        {user && (
+    // <nav className="p-2 bg-red-500">
+    //   <img src={logo} alt="MIDI Mixer Logo" className="h-20" />
+    //   <div className="absolute top-5 right-4">
+    //     {/* Conditionally show buttons based on user's login status */}
+    //     {user && (
+    //       <button
+    //         onClick={handleLogout}
+    //         style={{ border: "none", borderBottom: "1px solid" }}
+    //       >
+    //         Logout
+    //       </button>
+    //     )}
+    //   </div>
+    // </nav>
+
+    <nav className="w-screen h-32 md:h-16 mb-4 flex flex-col md:flex-row relative justify-between p-2">
+      <img src={logo} alt="MIDI Mixer Logo" className="h-16 object-contain" />
+      {user && (
+        <div className="flex flex-row items-center justify-center">
+          <h1 className="mr-4">Hi, {user.name}!</h1>
           <button
             onClick={handleLogout}
             style={{ border: "none", borderBottom: "1px solid" }}
           >
             Logout
           </button>
-        )}
-      </div>
+        </div>
+      )}
+
+      {/* ganti sendiri hay */}
+      <hr className="md:hidden my-4 border-black" />
     </nav>
   );
 };

@@ -1,48 +1,53 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
 const AddPreset = ({ onClose }) => {
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   const [presetName, setPresetName] = useState("");
   const [description, setDescription] = useState("");
   const [channels, setChannels] = useState([
-    { rotary: 0, fader: 0, button: false }, // Changed mute to button
+    { rotary: 0, fader: 0, button: false },
   ]);
 
   const handleAddChannel = () => {
-    setChannels([...channels, { rotary: 0, fader: 0, button: false }]); // Changed mute to button
+    setChannels([...channels, { rotary: 0, fader: 0, button: false }]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Form data to be sent to the backend
     const presetData = {
       presetName,
       description,
       channels: channels.map((channel, index) => ({
-        channel: index + 1, // Assuming channel numbers start from 1
-        button: channel.button, // Using button instead of mute
+        channel: index + 1,
+        button: channel.button,
         fader: channel.fader,
         rotary: channel.rotary,
       })),
     };
 
     try {
-      // Make a request to the backend to create a new preset, including credentials (cookies)
       const response = await fetch("http://localhost:8000/presets/new", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(presetData),
-        credentials: "include", // Include cookies in the request
+        credentials: "include",
       });
 
       if (response.ok) {
         const data = await response.json();
         console.log("Preset created:", data);
         toast.success("Preset created successfully!");
-        onClose(); // Close the form after successful creation
+        onClose();
       } else {
         console.error("Failed to create preset");
         toast.error("Failed to create preset");
@@ -53,8 +58,8 @@ const AddPreset = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 p-4 sm:p-0">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl"> {/* Changed max-w-md to max-w-4xl */}
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 p-4">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl max-h-full overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">Create a New Preset</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -77,37 +82,41 @@ const AddPreset = ({ onClose }) => {
           </div>
           <div className="mb-4">
             <label className="block text-gray-700">Channels</label>
-            <p className="text-sm text-gray-500 mb-2">(Insert import from device button here.)</p>
+            <p className="text-sm text-gray-500 mb-2">
+              (Insert import from device button here.)
+            </p>
             {channels.map((channel, index) => (
               <div key={index} className="mb-2">
-                <label className="block text-gray-700">Rotary Potentiometer</label>
+                <label className="block text-gray-700">
+                  Rotary Potentiometer
+                </label>
                 <input
                   type="number"
                   value={channel.rotary}
                   onChange={(e) =>
                     setChannels(
-                      channels.map(
-                        (ch, i) =>
-                          i === index
-                            ? { ...ch, rotary: Number(e.target.value) }
-                            : ch // Convert to number
+                      channels.map((ch, i) =>
+                        i === index
+                          ? { ...ch, rotary: Number(e.target.value) }
+                          : ch
                       )
                     )
                   }
                   required
                   className="mt-1 p-2 border border-gray-300 rounded w-full"
                 />
-                <label className="block text-gray-700 mt-2">Fader Potentiometer</label>
+                <label className="block text-gray-700 mt-2">
+                  Fader Potentiometer
+                </label>
                 <input
                   type="number"
                   value={channel.fader}
                   onChange={(e) =>
                     setChannels(
-                      channels.map(
-                        (ch, i) =>
-                          i === index
-                            ? { ...ch, fader: Number(e.target.value) }
-                            : ch // Convert to number
+                      channels.map((ch, i) =>
+                        i === index
+                          ? { ...ch, fader: Number(e.target.value) }
+                          : ch
                       )
                     )
                   }
@@ -118,14 +127,11 @@ const AddPreset = ({ onClose }) => {
                   Mute
                   <input
                     type="checkbox"
-                    checked={channel.button} // Changed to button
+                    checked={channel.button}
                     onChange={(e) =>
                       setChannels(
-                        channels.map(
-                          (ch, i) =>
-                            i === index
-                              ? { ...ch, button: e.target.checked }
-                              : ch // Changed to button
+                        channels.map((ch, i) =>
+                          i === index ? { ...ch, button: e.target.checked } : ch
                         )
                       )
                     }

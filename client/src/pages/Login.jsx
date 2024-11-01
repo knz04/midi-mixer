@@ -31,7 +31,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center mt-5">
+    <div className="flex flex-1 flex-col items-center justify-center">
       <form onSubmit={loginUser} className="flex flex-col w-72">
         <label className="text-center mb-2">Email</label>
         <input
@@ -51,11 +51,7 @@ export default function Login() {
           className="mb-5 text-center"
           style={{ border: "none", borderBottom: "1px solid" }}
         />
-        <button
-          type="submit"
-        >
-          Log In
-        </button>
+        <button type="submit">Log In</button>
       </form>
     </div>
   );

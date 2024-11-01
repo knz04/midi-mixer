@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -29,34 +29,45 @@ export default function Register() {
   };
 
   return (
-    <div>
-      <form onSubmit={registerUser} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px' }}>
-        <label style={{ marginBottom: '10px' }}>Name</label>
+    <div className="flex flex-1 flex-col items-center justify-center">
+      <form
+        onSubmit={registerUser}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          marginTop: "20px",
+        }}
+      >
+        <label style={{ marginBottom: "10px" }}>Name</label>
         <input
           type="text"
           placeholder="Enter Name"
           value={data.name}
           onChange={(e) => setData({ ...data, name: e.target.value })}
-          style={{ textAlign: 'center', marginBottom: '10px' }}
+          style={{ textAlign: "center", marginBottom: "10px" }}
         />
-        <label style={{ marginBottom: '10px' }}>Email</label>
+        <label style={{ marginBottom: "10px" }}>Email</label>
         <input
           type="email"
           placeholder="Enter Email"
           value={data.email}
           onChange={(e) => setData({ ...data, email: e.target.value })}
-          style={{ textAlign: 'center', marginBottom: '10px' }}
+          style={{ textAlign: "center", marginBottom: "10px" }}
         />
-        <label style={{ marginBottom: '10px' }}>Password</label>
+        <label style={{ marginBottom: "10px" }}>Password</label>
         <input
           type="password"
           placeholder="Enter Password"
           value={data.password}
           onChange={(e) => setData({ ...data, password: e.target.value })}
-          style={{ textAlign: 'center', marginBottom: '10px' }}
+          style={{ textAlign: "center", marginBottom: "10px" }}
         />
-        <button type="submit" style={{ marginTop: '20px', padding: '10px 20px', cursor: 'pointer' }}>
-          Sign In
+        <button
+          type="submit"
+          style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer" }}
+        >
+          Sign Up
         </button>
       </form>
     </div>

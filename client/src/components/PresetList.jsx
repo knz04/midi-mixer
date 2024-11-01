@@ -82,9 +82,17 @@ export default function PresetList() {
 
   return (
     <div style={{ marginLeft: "15px" }}>
-      <h1>Your Presets</h1>
+      <h1 className="text-2xl font-bold mb-4">Your Presets</h1>
       {presets.length === 0 ? (
-        <p>No presets available.</p>
+        <div className="flex flex-col items-center">
+          <p>No presets available.</p>
+          <button
+            onClick={handleOpenForm}
+            className="mt-4 p-2 bg-green-500 text-white rounded"
+          >
+            Create a new preset
+          </button>
+        </div>
       ) : (
         <select value={selectedPreset} onChange={handlePresetChange}>
           <option value="" disabled>
@@ -99,12 +107,6 @@ export default function PresetList() {
       )}
 
       <div className="flex items-center">
-        <button
-          onClick={() => setShowForm(!showForm)} // Toggle form visibility
-          className="mr-4 p-2 bg-green-500 text-white rounded"
-        >
-          {showForm ? "Create a new preset" : "Create a new preset"} {/* Change button text */}
-        </button>
         {showForm && (
           <div>
             <AddPreset

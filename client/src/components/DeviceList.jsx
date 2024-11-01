@@ -189,7 +189,16 @@ export default function DeviceList() {
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Your Devices</h1>
       {devices.length === 0 ? (
-        <p>No devices available.</p>
+        <div className="flex flex-col items-center">
+          <p>No devices available.</p>
+          <button
+            onClick={() => setShowForm(!showForm)} // Toggle form visibility
+            className="mt-4 p-2 bg-green-500 text-white rounded"
+          >
+            {showForm ? "Add a new" : "Add a new device"}{" "}
+            {/* Change button text based on form visibility */}
+          </button>
+        </div>
       ) : (
         <>
           {/* Dropdown for selecting a device */}
@@ -261,14 +270,6 @@ export default function DeviceList() {
       )}
 
       <div className="flex items-start">
-        {/* Button to add a new device */}
-        <button
-          onClick={() => setShowForm(!showForm)} // Toggle form visibility
-          className="mr-4 p-2 bg-green-500 text-white rounded"
-        >
-          {showForm ? "Add a new" : "Add a new device"} {/* Change button text based on form visibility */}
-        </button>
-
         {/* Add Device form */}
         {showForm && (
           <div className="flex-grow">
