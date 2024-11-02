@@ -18,6 +18,7 @@ const Dashboard = () => {
       </div> */}
       <div className="flex flex-col flex-1 gap-16">
         <DeviceList />
+        <hr />
         <PresetList />
       </div>
     </div>

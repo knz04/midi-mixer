@@ -49,74 +49,90 @@ export default function EditPreset({ preset, onClose, onUpdate, onDelete }) {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Preset Name:
-          <input
-            type="text"
-            value={presetName}
-            onChange={(e) => setPresetName(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Description:
-          <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </label>
-        <br />
-        <h3>Channels:</h3>
-        {channels.map((channel, index) => (
-          <div key={index}>
-            <strong>Channel {index + 1}</strong>
-            <br />
-            <label>
-              Fader:
-              <input
-                type="number"
-                value={channel.fader}
-                onChange={(e) =>
-                  handleChannelChange(index, "fader", e.target.value)
-                }
-              />
-            </label>
-            <br />
-            <label>
-              Rotary:
-              <input
-                type="number"
-                value={channel.rotary}
-                onChange={(e) =>
-                  handleChannelChange(index, "rotary", e.target.value)
-                }
-              />
-            </label>
-            <br />
-            <label>
-              Mute:
-              <input
-                type="checkbox"
-                checked={channel.button}
-                onChange={(e) =>
-                  handleChannelChange(index, "button", e.target.checked)
-                }
-              />
-            </label>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg max-h-screen overflow-y-auto">
+        <form onSubmit={handleSubmit}>
+          <label className="block mb-4">
+            Preset Name:
+            <input
+              type="text"
+              value={presetName}
+              onChange={(e) => setPresetName(e.target.value)}
+              className="mt-1 w-full px-3 py-2 border rounded-md"
+            />
+          </label>
+          <label className="block mb-4">
+            Description:
+            <input
+              type="text"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="mt-1 w-full px-3 py-2 border rounded-md"
+            />
+          </label>
+          <h3 className="text-lg font-semibold mb-2">Channels:</h3>
+          {channels.map((channel, index) => (
+            <div key={index} className="mb-4 p-4 border rounded-md">
+              <strong className="block mb-2">Channel {index + 1}</strong>
+              <label className="block mb-2">
+                Fader:
+                <input
+                  type="number"
+                  value={channel.fader}
+                  onChange={(e) =>
+                    handleChannelChange(index, "fader", e.target.value)
+                  }
+                  className="mt-1 w-full px-3 py-2 border rounded-md"
+                />
+              </label>
+              <label className="block mb-2">
+                Rotary:
+                <input
+                  type="number"
+                  value={channel.rotary}
+                  onChange={(e) =>
+                    handleChannelChange(index, "rotary", e.target.value)
+                  }
+                  className="mt-1 w-full px-3 py-2 border rounded-md"
+                />
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={channel.button}
+                  onChange={(e) =>
+                    handleChannelChange(index, "button", e.target.checked)
+                  }
+                  className="mr-2"
+                />
+                Mute
+              </label>
+            </div>
+          ))}
+          <div className="flex justify-end space-x-2">
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            >
+              Save Changes
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleDelete}
+              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+            >
+              Delete Preset
+            </button>
           </div>
-        ))}
-        <br />
-        <button type="submit">Save Changes</button>
-        <button type="button" onClick={onClose}>
-          Cancel
-        </button>
-        <button type="button" onClick={handleDelete}>
-          Delete Preset
-        </button>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }

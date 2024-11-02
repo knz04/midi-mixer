@@ -3,7 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import AddPreset from "./AddPreset";
 import EditPreset from "./EditPreset";
-import PresetDetails from "./PresetDetails"; // Import PresetDetails
+import PresetDetails from "./PresetDetails";
 
 export default function PresetList() {
   const [presets, setPresets] = useState([]);
@@ -11,7 +11,7 @@ export default function PresetList() {
   const [selectedPreset, setSelectedPreset] = useState("");
   const [fetchedPreset, setFetchedPreset] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const [showEditForm, setShowEditForm] = useState(false); // Toggle edit form visibility
+  const [showEditForm, setShowEditForm] = useState(false);
 
   const fetchPresets = async () => {
     try {
@@ -71,9 +71,8 @@ export default function PresetList() {
     setShowEditForm(false);
   };
 
-  // New function to fetch presets after creating one
   const handlePresetCreated = () => {
-    fetchPresets(); // Refresh presets list
+    fetchPresets();
   };
 
   if (loading) {
@@ -94,7 +93,11 @@ export default function PresetList() {
           </button>
         </div>
       ) : (
-        <select value={selectedPreset} onChange={handlePresetChange}>
+        <select
+          value={selectedPreset}
+          onChange={handlePresetChange}
+          className="w-74 h-12 px-4 py-2 text-lg border border-gray-300 rounded"
+        >
           <option value="" disabled>
             Select a preset
           </option>
@@ -108,35 +111,32 @@ export default function PresetList() {
 
       <div className="flex items-center">
         {showForm && (
-          <div>
-            <AddPreset
-              onClose={handleCloseForm}
-              onPresetCreated={handlePresetCreated}
-            />
-          </div>
+          <AddPreset
+            onClose={handleCloseForm}
+            onPresetCreated={handlePresetCreated}
+          />
         )}
       </div>
 
-      {/* Use PresetDetails component to display fetchedPreset */}
       {fetchedPreset && (
         <PresetDetails
           fetchedPreset={fetchedPreset}
           handleOpenEditForm={handleOpenEditForm}
+          handleOpenForm={handleOpenForm} // Pass handleOpenForm to PresetDetails
         />
       )}
 
-      {/* Render the EditPreset component when editing */}
       {showEditForm && (
         <EditPreset
           preset={fetchedPreset}
           onClose={handleCloseForm}
           onUpdate={() => {
-            fetchPresetDetails(selectedPreset); // Re-fetch the preset details
-            fetchPresets(); // Re-fetch the preset list after editing
+            fetchPresetDetails(selectedPreset);
+            fetchPresets();
           }}
           onDelete={() => {
-            fetchPresets(); // Call fetchPresets after deletion
-            setFetchedPreset(""); // Hide PresetDetails
+            fetchPresets();
+            setFetchedPreset("");
           }}
         />
       )}

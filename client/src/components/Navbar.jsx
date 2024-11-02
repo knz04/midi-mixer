@@ -52,7 +52,6 @@ const Navbar = () => {
         </div>
       )}
 
-      {/* ganti sendiri hay */}
       <hr className="md:hidden my-4 border-black" />
     </nav>
   );
