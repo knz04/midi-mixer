@@ -193,7 +193,7 @@ export default function DeviceList() {
           <p>No devices available.</p>
           <button
             onClick={() => setShowForm(!showForm)} // Toggle form visibility
-            className="mt-4 p-2 bg-green-500 text-white rounded"
+            className="mt-4 p-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
           >
             {showForm ? "Add a new device" : "Add a new device"}{" "}
             {/* Change button text based on form visibility */}
@@ -205,7 +205,7 @@ export default function DeviceList() {
           <select
             value={selectedDevice}
             onChange={handleDeviceChange}
-            className="mb-4 p-2 border rounded"
+            className="mb-4 p-2 border rounded hover:border-blue-500 transition"
           >
             <option value="" disabled>
               Select a device
@@ -225,7 +225,7 @@ export default function DeviceList() {
             <select
               value={selectedPreset}
               onChange={handlePresetChange}
-              className="mb-4 p-2 border rounded"
+              className="mb-4 p-2 border rounded hover:border-blue-500 transition"
             >
               <option value="" disabled>
                 Select a preset
@@ -244,13 +244,13 @@ export default function DeviceList() {
             <div className="mb-4">
               <button
                 onClick={handleImportPreset}
-                className="mr-2 p-2 bg-blue-500 text-white rounded"
+                className="mr-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
               >
                 Import Preset
               </button>
               <button
                 onClick={handleRemovePreset}
-                className="p-2 bg-red-500 text-white rounded"
+                className="p-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
               >
                 Remove Preset
               </button>
@@ -261,7 +261,7 @@ export default function DeviceList() {
           {selectedDevice && (
             <button
               onClick={handleOpenEditForm}
-              className="mb-4 p-2 bg-yellow-500 text-white rounded"
+              className="mb-4 p-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
             >
               Edit Device
             </button>

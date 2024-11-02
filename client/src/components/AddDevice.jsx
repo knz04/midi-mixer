@@ -70,7 +70,7 @@ const AddDevice = ({ onClose }) => {
           <button type="submit" className="mb-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
             Create Device
           </button>
-          <button type="button" onClick={onClose} className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">
+          <button type="button" onClick={onClose} className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
             Cancel
           </button>
         </form>
