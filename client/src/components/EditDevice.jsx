@@ -3,7 +3,11 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 export default function EditDevice({ device, onClose, onUpdate, onDelete }) {
-  const [deviceName, setDeviceName] = useState(device.deviceName);
+  if (!device) {
+    return <div>No device selected. Please select a device to edit.</div>;
+  }
+
+  const [deviceName, setDeviceName] = useState(device.deviceName || "");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -49,12 +53,24 @@ export default function EditDevice({ device, onClose, onUpdate, onDelete }) {
           />
         </label>
         <br />
-        {/* Removed the MAC Address input field */}
-        <button type="submit">Save Changes</button>
-        <button type="button" onClick={onClose}>
+        <button
+          type="submit"
+          className="mb-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+        >
+          Save Changes
+        </button>
+        <button
+          type="button"
+          onClick={onClose}
+          className="p-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+        >
           Cancel
         </button>
-        <button type="button" onClick={handleDelete}>
+        <button
+          type="button"
+          onClick={handleDelete}
+          className="p-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+        >
           Delete Device
         </button>
       </form>

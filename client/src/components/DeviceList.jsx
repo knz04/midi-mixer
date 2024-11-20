@@ -19,7 +19,7 @@ export default function DeviceList() {
   // Fetch list of devices
   const fetchDevices = async () => {
     try {
-      const response = await axios.get("/devices", {
+      const response = await axios.get("/devices/:id", {
         withCredentials: true,
       });
       setDevices(response.data);
@@ -34,7 +34,7 @@ export default function DeviceList() {
   // Fetch list of presets
   const fetchPresets = async () => {
     try {
-      const response = await axios.get("/presets", {
+      const response = await axios.get("/presets/:id", {
         withCredentials: true,
       });
       setPresets(response.data); // Assuming response.data contains an array of presets
@@ -150,15 +150,21 @@ export default function DeviceList() {
       console.log("Selected Preset:", selectedPreset);
 
       // Send a PUT request with the presetId in the body and deviceId in the URL
-      const response = await axios.put(
+      await axios.put(
         `/devices/add-preset/${selectedDevice}`, // Device ID in the route
         { presetId: selectedPreset }, // Preset ID in the request body
         { withCredentials: true }
       );
 
       toast.success("Preset loaded into device successfully.");
-      setPresetLoaded(true); // Update preset loaded state
-      setFetchedDevice(response.data.device); // Update fetched device data with the response
+
+      // Clear selected device and fetched device state
+      setSelectedDevice("");
+      setFetchedDevice(null);
+      setSelectedPreset("");
+      localStorage.removeItem("selectedDevice");
+      localStorage.removeItem("selectedPreset");
+      localStorage.removeItem("fetchedDevice");
     } catch (error) {
       console.error("Error loading preset into device:", error);
       toast.error("Failed to load preset into device.");
@@ -167,14 +173,20 @@ export default function DeviceList() {
 
   const handleRemovePreset = async () => {
     try {
-      const response = await axios.put(
+      await axios.put(
         `/devices/remove-preset/${selectedDevice}`,
         { presetId: fetchedDevice.presetId },
         { withCredentials: true }
       );
       toast.success("Preset removed successfully.");
-      setPresetLoaded(false); // Update preset loaded state
-      setFetchedDevice(response.data); // Update fetched device data
+
+      // Clear selected device and fetched device state
+      setSelectedDevice("");
+      setFetchedDevice(null);
+      setSelectedPreset("");
+      localStorage.removeItem("selectedDevice");
+      localStorage.removeItem("selectedPreset");
+      localStorage.removeItem("fetchedDevice");
     } catch (error) {
       console.error(error);
       toast.error("Failed to remove preset.");
@@ -269,6 +281,15 @@ export default function DeviceList() {
         </>
       )}
 
+      <br />
+      <button
+        onClick={() => setShowForm(!showForm)} // Toggle form visibility
+        className="mt-4 p-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
+      >
+        {showForm ? "Add a new device" : "Add a new device"}{" "}
+        {/* Change button text based on form visibility */}
+      </button>
+
       <div className="flex items-start">
         {/* Add Device form */}
         {showForm && (
@@ -280,12 +301,18 @@ export default function DeviceList() {
           </div>
         )}
 
-        {/* Edit Device form */}
+        {/* Edit Device Form */}
         {showEditForm && selectedDevice && (
-          <EditDevice
-            selectedDeviceId={selectedDevice}
-            onClose={handleCloseForm}
-          />
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white p-6 rounded shadow-lg w-96">
+              <EditDevice
+                device={fetchedDevice} // Pass the fetched device details
+                onClose={handleCloseForm}
+                onUpdate={fetchDevices} // Refresh the device list after editing
+                onDelete={fetchDevices} // Refresh the device list after deletion
+              />
+            </div>
+          </div>
         )}
       </div>
     </div>

@@ -140,6 +140,12 @@ export default function PresetList() {
           }}
         />
       )}
+      <button
+        onClick={handleOpenForm}
+        className="mt-4 p-2 bg-green-500 text-white rounded"
+      >
+        Create a new preset
+      </button>
     </div>
   );
 }
