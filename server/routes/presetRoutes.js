@@ -1,26 +1,25 @@
 const express = require("express");
 const router = express.Router();
-const Preset = require("../models/presetModel");
+const cors = require("cors");
+const {
+  createPreset,
+  getPreset,
+  updatePreset,
+  deletePreset,
+  getPresetId,
+} = require("../controllers/presetControllers");
 
-// Get all presets
-router.get("/api/presets", async (req, res) => {
-  try {
-    const presets = await Preset.find(); // Fetch presets from MongoDB
-    res.json(presets); // Send presets back to frontend
-  } catch (err) {
-    res.status(500).send("Server error");
-  }
-});
+router.use(
+  cors({
+    credentials: true,
+    origin: "http://localhost:5173",
+  })
+);
 
-// Save a new preset
-router.post("/api/presets", async (req, res) => {
-  try {
-    const newPreset = new Preset(req.body); // Create a new preset from request body
-    const savedPreset = await newPreset.save(); // Save to MongoDB
-    res.json(savedPreset); // Return the saved preset
-  } catch (err) {
-    res.status(500).send("Error saving preset");
-  }
-});
+router.post("/new", createPreset);
+router.get("/:userId", getPreset);
+router.put("/:id", updatePreset);
+router.delete("/:id", deletePreset);
+router.get("/get-preset/:id", getPresetId);
 
 module.exports = router;

@@ -8,6 +8,18 @@ const userSchema = new Schema({
     unique: true,
   },
   password: String,
+  presets: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Preset",
+    },
+  ],
+  devices: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Device",
+    },
+  ],
 });
 
 const userModel = mongoose.model("User", userSchema);

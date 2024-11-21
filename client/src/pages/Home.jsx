@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
 
@@ -10,15 +10,16 @@ export default function Home() {
   }
 
   return (
-    <div>
-      <div>
+    <div className="flex flex-1 flex-col items-center justify-center">
+      <div className="text-4xl font-bold mb-5">SketchMIDI</div>
+      <div className="mb-5">
         <Link to="/login">
-        <button><img src="src/assets/login.png" alt="Sign Up" style={{ width: "150px", height: "75px" }} /></button>
+          <button className="w-36 h-12 border-b-2 border-black">Log In</button>
         </Link>
       </div>
       <div>
-        <Link to="/signup">
-        <button><img src="src/assets/signup.png" alt="Sign Up" style={{ width: "150px", height: "75px" }} /></button>
+        <Link to="/register">
+          <button className="w-36 h-12 border-b-2 border-black">Sign Up</button>
         </Link>
       </div>
     </div>
