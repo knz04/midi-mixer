@@ -7,6 +7,16 @@ const app = express();
 const authRoutes = require("./routes/authRoutes");
 const presetRoutes = require("./routes/presetRoutes");
 const deviceRoutes = require("./routes/deviceRoutes");
+const mqtt = require("mqtt");
+const bodyParser = require("body-parser");
+
+const mqttOptions = {
+  host: "e0d1458af7764ee788c14d0501883ccb.s1.eu.hivemq.cloud",
+  port: 8883,
+  username: "Midi",
+  password: "midimidi",
+  protocol: "mqtts", // Secure MQTT
+};
 
 // database connection
 mongoose

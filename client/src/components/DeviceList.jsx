@@ -203,13 +203,6 @@ export default function DeviceList() {
       {devices.length === 0 ? (
         <div className="flex flex-col items-center">
           <p>No devices available.</p>
-          <button
-            onClick={() => setShowForm(!showForm)} // Toggle form visibility
-            className="mt-4 p-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
-          >
-            {showForm ? "Add a new device" : "Add a new device"}{" "}
-            {/* Change button text based on form visibility */}
-          </button>
         </div>
       ) : (
         <>

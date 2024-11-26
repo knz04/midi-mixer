@@ -85,12 +85,6 @@ export default function PresetList() {
       {presets.length === 0 ? (
         <div className="flex flex-col items-center">
           <p>No presets available.</p>
-          <button
-            onClick={handleOpenForm}
-            className="mt-4 p-2 bg-green-500 text-white rounded"
-          >
-            Create a new preset
-          </button>
         </div>
       ) : (
         <select
