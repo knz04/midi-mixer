@@ -75,38 +75,50 @@ export default function EditPreset({ preset, onClose, onUpdate, onDelete }) {
             <div key={index} className="mb-4 p-4 border rounded-md">
               <strong className="block mb-2">Channel {index + 1}</strong>
               <label className="block mb-2">
-                Fader:
-                <input
-                  type="number"
-                  value={channel.fader}
+                Component:
+                <select
+                  value={channel.component}
                   onChange={(e) =>
-                    handleChannelChange(index, "fader", e.target.value)
+                    handleChannelChange(index, "component", e.target.value)
                   }
                   className="mt-1 w-full px-3 py-2 border rounded-md"
-                />
+                >
+                  <option value="rotary">Rotary</option>
+                  <option value="fader">Fader</option>
+                  <option value="button">Button</option>
+                </select>
               </label>
-              <label className="block mb-2">
-                Rotary:
-                <input
-                  type="number"
-                  value={channel.rotary}
-                  onChange={(e) =>
-                    handleChannelChange(index, "rotary", e.target.value)
-                  }
-                  className="mt-1 w-full px-3 py-2 border rounded-md"
-                />
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={channel.button}
-                  onChange={(e) =>
-                    handleChannelChange(index, "button", e.target.checked)
-                  }
-                  className="mr-2"
-                />
-                Mute
-              </label>
+              {(channel.component === "rotary" ||
+                channel.component === "fader") && (
+                <label className="block mb-2">
+                  Value:
+                  <input
+                    type="number"
+                    value={channel.value}
+                    onChange={(e) =>
+                      handleChannelChange(
+                        index,
+                        "value",
+                        parseInt(e.target.value, 10)
+                      )
+                    }
+                    className="mt-1 w-full px-3 py-2 border rounded-md"
+                  />
+                </label>
+              )}
+              {channel.component === "button" && (
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={channel.button}
+                    onChange={(e) =>
+                      handleChannelChange(index, "button", e.target.checked)
+                    }
+                    className="mr-2"
+                  />
+                  Mute
+                </label>
+              )}
             </div>
           ))}
           <div className="flex justify-end space-x-2">

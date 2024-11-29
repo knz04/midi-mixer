@@ -17,9 +17,9 @@ const Dashboard = () => {
         {!!user && <h1>Hi, {user.name}!</h1>}
       </div> */}
       <div className="flex flex-col flex-1 gap-16">
-        <DeviceList />
-        <hr />
         <PresetList />
+        <hr />
+        <DeviceList />
       </div>
     </div>
   );

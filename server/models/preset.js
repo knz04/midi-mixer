@@ -16,16 +16,11 @@ const presetSchema = new Schema({
         min: [1, "Channel number must be between 1 and 6"],
         max: [6, "Channel number must be between 1 and 6"],
       },
-      button: Boolean,
-      fader: {
+      component: String,
+      value: {
         type: Number,
         min: [0, "Fader value must be between 0 and 127"],
         max: [127, "Fader value must be between 0 and 127"],
-      },
-      rotary: {
-        type: Number,
-        min: [0, "Rotary value must be between 0 and 127"],
-        max: [127, "Rotary value must be between 0 and 127"],
       },
     },
   ],

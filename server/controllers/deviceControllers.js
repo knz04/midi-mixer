@@ -1,6 +1,74 @@
 const User = require("../models/user");
 const Device = require("../models/device");
+const Preset = require("../models/preset");
 const jwt = require("jsonwebtoken");
+const mqtt = require("mqtt");
+
+const mqttOptions = {
+  host: "e0d1458af7764ee788c14d0501883ccb.s1.eu.hivemq.cloud",
+  port: 8883,
+  username: "Midi",
+  password: "midimidi",
+  protocol: "mqtts", // Secure MQTT
+};
+
+const client = mqtt.connect(mqttOptions);
+let channels = [];
+let midiMessage = [];
+
+function convertChannelsToMidi(channels) {
+  // Map through the channels to generate MIDI messages
+  const midiMessages = channels.map((channelData) => {
+    const { channel, component, value } = channelData;
+
+    // Determine the node number based on the component type
+    let nodePrefix;
+    if (component === "rotary") {
+      nodePrefix = 6; // Rotary components use '6'
+    } else if (component === "fader") {
+      nodePrefix = 8; // Fader components use '8'
+    } else if (component === "button") {
+      nodePrefix = 7; // Button components use '7'
+    } else {
+      throw new Error(`Unknown component type: ${component}`);
+    }
+
+    // Handle button value conversion (boolean to MIDI standard)
+    let midiValue = value;
+    if (component === "button") {
+      midiValue = value === 0 ? 0 : 127; // 0 becomes 0, non-zero becomes 127
+    }
+
+    // Assemble the MIDI message
+    const node = `${nodePrefix}0`; // Node number is the prefix followed by '0'
+    const midiMessage = `C${channel}N${node}V${midiValue}`;
+
+    return midiMessage;
+  });
+
+  // Join all MIDI messages into one string separated by a colon
+  return ";" + midiMessages.join(";");
+}
+
+const topic = "midi/+/messages";
+let outTopic = "/midi/receive";
+const message = "test";
+
+client.on("connect", () => {
+  console.log("Ready to send.");
+  client.subscribe(topic, (err) => {
+    if (err) {
+      console.error("Failed to subscribe:", err);
+    } else {
+      console.log(`Subscribed to topic (send): ${topic}`);
+    }
+  });
+});
+
+client.on("message", (topic) => {
+  console.log(topic);
+  pubTopic = topic;
+});
 
 const createDevice = async (req, res) => {
   const { token } = req.cookies; // Extract token from cookies
@@ -146,7 +214,29 @@ async function loadPreset(req, res) {
     // Check if device exists
     const id = req.params.id;
 
-    // Update device data
+    const presetInfo = await Preset.findById(presetId);
+    if (!presetInfo) {
+      return res.status(404).json({ error: "Preset not found." });
+    }
+
+    // Get channels from the preset
+    channels = presetInfo.channels;
+    console.log("Channels:", channels);
+
+    // Convert channels to MIDI messages
+    midiMessage = convertChannelsToMidi(channels);
+    console.log("MIDI Message:", midiMessage);
+
+    // Publish the MIDI message to the MQTT topic
+    client.publish(outTopic, midiMessage, (err) => {
+      if (err) {
+        console.error("Failed to publish message:", err);
+      } else {
+        console.log(`Message published to topic: ${outTopic}`);
+      }
+    });
+
+    // Update device with the selected presetId
     const updatedDevice = await Device.findByIdAndUpdate(
       id,
       { presetId },

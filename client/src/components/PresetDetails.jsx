@@ -19,23 +19,21 @@ export default function PresetDetails({
         <thead>
           <tr className="bg-green-500">
             <th className="px-4 py-2">Channel Number</th>
-            <th className="px-4 py-2">Fader</th>
-            <th className="px-4 py-2">Rotary</th>
-            <th className="px-4 py-2">Mute</th>
+            <th className="px-4 py-2">Component</th>
+            <th className="px-4 py-2">Value</th>
           </tr>
         </thead>
         <tbody>
           {fetchedPreset.channels?.map((channel, index) => (
             <tr key={channel._id || index} className="border-t bg-green-300">
               <td className="px-4 py-2">{index + 1}</td>
-              <td className="px-4 py-2">{channel.fader}</td>
-              <td className="px-4 py-2">{channel.rotary}</td>
-              <td
-                className={`px-4 py-2 ${
-                  channel.button ? "text-green-800" : "text-red-500"
-                }`}
-              >
-                {channel.button ? "On" : "Off"}
+              <td className="px-4 py-2">{channel.component}</td>
+              <td className="px-4 py-2">
+                {channel.component === "rotary" || channel.component === "fader"
+                  ? channel.value
+                  : channel.button
+                  ? "On"
+                  : "Off"}
               </td>
             </tr>
           ))}
