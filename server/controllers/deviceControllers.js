@@ -51,7 +51,7 @@ function convertChannelsToMidi(channels) {
 }
 
 const topic = "midi/+/messages";
-let outTopic = "/midi/receive";
+let outTopic = [];
 const message = "test";
 
 client.on("connect", () => {
@@ -67,7 +67,7 @@ client.on("connect", () => {
 
 client.on("message", (topic) => {
   console.log(topic);
-  pubTopic = topic;
+  outTopic = topic + "/receive";
 });
 
 const createDevice = async (req, res) => {
