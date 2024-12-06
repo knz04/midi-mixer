@@ -19,8 +19,8 @@ const presetSchema = new Schema({
       component: String,
       value: {
         type: Number,
-        min: [0, "Fader value must be between 0 and 127"],
-        max: [127, "Fader value must be between 0 and 127"],
+        min: [0, "Value must be between 0 and 127"],
+        max: [127, "Value must be between 0 and 127"],
       },
     },
   ],
