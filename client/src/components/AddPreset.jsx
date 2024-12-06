@@ -80,7 +80,7 @@ const AddPreset = ({ onClose }) => {
               className="mt-1 p-2 border border-gray-300 rounded w-full"
             />
           </div>
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label className="block text-gray-700">Channels</label>
             <p className="text-sm text-gray-500 mb-2">
               (Insert import from device button here.)
@@ -147,12 +147,12 @@ const AddPreset = ({ onClose }) => {
             >
               Add Channel
             </button>
-          </div>
+          </div> */}
           <button
             type="submit"
             className="mt-4 p-2 bg-green-500 text-white rounded w-full"
           >
-            Create Preset
+            Import Preset
           </button>
           <button
             type="button"

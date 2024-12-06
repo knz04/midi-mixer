@@ -58,13 +58,13 @@ client.on("message", (topic, message) => {
 
     // Determine the component type and process the value
     if (node.startsWith("6")) {
-      componentType = "Rotary";
+      componentType = "rotary";
       value = parseInt(velocity, 10); // Use velocity as-is
     } else if (node.startsWith("8")) {
-      componentType = "Fader";
+      componentType = "fader";
       value = parseInt(velocity, 10); // Use velocity as-is
     } else if (node.startsWith("7")) {
-      componentType = "Button";
+      componentType = "button";
       if (velocity === "0") {
         value = false;
       } else if (velocity === "127") {

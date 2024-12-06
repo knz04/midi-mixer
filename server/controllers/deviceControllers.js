@@ -60,7 +60,7 @@ client.on("connect", () => {
     if (err) {
       console.error("Failed to subscribe:", err);
     } else {
-      console.log(`Subscribed to topic (send): ${topic}`);
+      console.log(`Subscribed to topic (send): ${topic}/receive`);
     }
   });
 });
