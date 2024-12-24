@@ -58,7 +58,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: "http://localhost:5173", // Your frontend URL
+    origin: "https://knz04.github.io", // Your frontend URL
     credentials: true, // Allow cookies
   })
 );
@@ -67,7 +67,7 @@ app.use("/", authRoutes);
 app.use("/presets", presetRoutes);
 app.use("/devices", deviceRoutes);
 
-const PORT = process.env.PORT | 8000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
