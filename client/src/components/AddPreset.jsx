@@ -34,7 +34,7 @@ const AddPreset = ({ onClose }) => {
     };
 
     try {
-      const response = await fetch("http://localhost:8000/presets/new", {
+      const response = await fetch("https://knz04.github.io/presets/new", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

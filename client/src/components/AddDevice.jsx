@@ -17,7 +17,7 @@ const AddDevice = ({ onClose }) => {
 
     try {
       // Make a request to the backend to create a new device, including credentials (cookies)
-      const response = await fetch("http://localhost:8000/devices/new", {
+      const response = await fetch("https://knz04.github.io/devices/new", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,7 +46,9 @@ const AddDevice = ({ onClose }) => {
         <h2 className="text-2xl font-bold mb-4">Create a New Device</h2>
         <form onSubmit={handleSubmit} className="flex flex-col">
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Device Name</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Device Name
+            </label>
             <input
               type="text"
               value={deviceName}
@@ -56,7 +58,9 @@ const AddDevice = ({ onClose }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">MAC Address</label>
+            <label className="block text-sm font-medium text-gray-700">
+              MAC Address
+            </label>
             <input
               type="text"
               value={macAdd}
@@ -67,10 +71,17 @@ const AddDevice = ({ onClose }) => {
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
           </div>
-          <button type="submit" className="mb-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+          <button
+            type="submit"
+            className="mb-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+          >
             Create Device
           </button>
-          <button type="button" onClick={onClose} className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
+          <button
+            type="button"
+            onClick={onClose}
+            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+          >
             Cancel
           </button>
         </form>
