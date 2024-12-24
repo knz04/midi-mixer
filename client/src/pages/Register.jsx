@@ -41,9 +41,9 @@ export default function Register() {
         <img src={COVER_IMAGE} className="w-full h-full object-cover" />
       </div>
 
-      <div className="w-1/2 h-full bg-[#FFFFFF] flex flex-col p-20 justify-between">
+      <div className="w-1/2 h-full bg-[#FFFFFF] flex flex-col p-28 justify-between">
         <form onSubmit={registerUser}>
-          <div className="w-full mt-[100px] flex flex-col max-w-[500px]">
+          <div className="w-full mt-[60px] flex flex-col max-w-[500px]">
             <div className="w-full flex flex-col mb-[43px]">
               <h3 className="text-2x1 font-semibold mb-2">Sign Up</h3>
               <p className="text-base mb-2">Create a new account.</p>
