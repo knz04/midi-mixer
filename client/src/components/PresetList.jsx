@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import AddPreset from "./AddPreset";
 import EditPreset from "./EditPreset";
 import PresetDetails from "./PresetDetails";
+import Mixer from "./Mixer";
 
 export default function PresetList() {
   const [presets, setPresets] = useState([]);
@@ -102,6 +103,8 @@ export default function PresetList() {
           ))}
         </select>
       )}
+
+      <Mixer channels={fetchedPreset.channels} />
 
       <div className="flex items-center">
         {showForm && (
