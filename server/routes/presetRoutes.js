@@ -12,7 +12,7 @@ const {
 router.use(
   cors({
     credentials: true,
-    origin: "https://knz04.github.io",
+    origin: "https://knz04.github.io/midi-mixer",
   })
 );
 

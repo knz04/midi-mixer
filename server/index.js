@@ -58,7 +58,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: "https://knz04.github.io", // Your frontend URL
+    origin: "https://knz04.github.io/midi-mixer", // Your frontend URL
     credentials: true, // Allow cookies
   })
 );

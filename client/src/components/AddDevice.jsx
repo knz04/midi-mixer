@@ -17,14 +17,17 @@ const AddDevice = ({ onClose }) => {
 
     try {
       // Make a request to the backend to create a new device, including credentials (cookies)
-      const response = await fetch("https://knz04.github.io/devices/new", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(deviceData),
-        credentials: "include", // Include cookies in the request
-      });
+      const response = await fetch(
+        "https://knz04.github.io/midi-mixer/devices/new",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(deviceData),
+          credentials: "include", // Include cookies in the request
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
