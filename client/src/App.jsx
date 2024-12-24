@@ -10,7 +10,7 @@ import { UserContextProvider } from "../context/userContext";
 import "./App.css";
 import "./Mixer.css";
 
-axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.baseURL = "https://knz04.github.io";
 axios.defaults.withCredentials = true;
 
 const App = () => {
