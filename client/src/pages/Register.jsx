@@ -45,7 +45,7 @@ export default function Register() {
         <form onSubmit={registerUser}>
           <div className="w-full mt-[60px] flex flex-col max-w-[500px]">
             <div className="w-full flex flex-col mb-[43px]">
-              <h3 className="text-2x1 font-semibold mb-2">Sign Up</h3>
+              <h3 className="text-2xl font-semibold mb-2">Sign Up</h3>
               <p className="text-base mb-2">Create a new account.</p>
             </div>
 
@@ -53,8 +53,8 @@ export default function Register() {
               <input
                 type="text"
                 placeholder="Name"
-                value={data.email}
-                onChange={(e) => setData({ ...data, name: e.target.value })}
+                value={data.name} // Corrected here
+                onChange={(e) => setData({ ...data, name: e.target.value })} // Corrected here
                 className="w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none focus:outline-none"
               />
               <input
