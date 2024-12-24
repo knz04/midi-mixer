@@ -3,7 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
-import COVER_IMAGE from "../assets/home.jpeg";
+import COVER_IMAGE from "../../public/assets/home.jpeg";
 import "../styles/Login.css";
 
 export default function Login() {

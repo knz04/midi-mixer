@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import COVER_IMAGE from "../assets/home.jpeg";
+import COVER_IMAGE from "../../public/assets/home.jpeg";
 import "../styles/Login.css";
 
 export default function Register() {

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../context/userContext";
 import toast from "react-hot-toast";
-import logo from "../assets/logo.png";
+import logo from "../../public/assets/logo.png";
 
 const Navbar = () => {
   const { user, setUser } = useContext(UserContext); // Access user context
