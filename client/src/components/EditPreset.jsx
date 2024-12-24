@@ -20,7 +20,7 @@ export default function EditPreset({ preset, onClose, onUpdate, onDelete }) {
 
     try {
       const response = await axios.put(
-        `/presets/${preset._id}`,
+        `https://knz04.github.io/midi-mixer/presets/${preset._id}`,
         { presetName, description, channels },
         { withCredentials: true }
       );
@@ -36,7 +36,10 @@ export default function EditPreset({ preset, onClose, onUpdate, onDelete }) {
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this preset?")) {
       try {
-        await axios.delete(`/presets/${preset._id}`, { withCredentials: true });
+        await axios.delete(
+          `https://knz04.github.io/midi-mixer/presets/${preset._id}`,
+          { withCredentials: true }
+        );
         toast.success("Preset deleted successfully!");
         localStorage.removeItem("selectedPresetId"); // Clear local storage
         onDelete(); // Trigger refresh on the parent component

@@ -42,9 +42,12 @@ export default function PresetList() {
 
   const fetchPresetDetails = async (presetId) => {
     try {
-      const response = await axios.get(`/presets/get-preset/${presetId}`, {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `https://knz04.github.io/midi-mixer/presets/get-preset/${presetId}`,
+        {
+          withCredentials: true,
+        }
+      );
       setFetchedPreset(response.data);
     } catch (error) {
       console.error("Error fetching preset:", error);

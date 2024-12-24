@@ -19,9 +19,12 @@ export default function DeviceList() {
   // Fetch list of devices
   const fetchDevices = async () => {
     try {
-      const response = await axios.get("/devices/:id", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        "https://knz04.github.io/midi-mixer/devices/:id",
+        {
+          withCredentials: true,
+        }
+      );
       setDevices(response.data);
     } catch (error) {
       console.error(error);
@@ -34,9 +37,12 @@ export default function DeviceList() {
   // Fetch list of presets
   const fetchPresets = async () => {
     try {
-      const response = await axios.get("/presets/:id", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        "https://knz04.github.io/midi-mixer/presets/:id",
+        {
+          withCredentials: true,
+        }
+      );
       setPresets(response.data); // Assuming response.data contains an array of presets
     } catch (error) {
       console.error(error);
@@ -95,9 +101,12 @@ export default function DeviceList() {
   // Fetch details of selected device
   const fetchDeviceDetails = async (deviceId) => {
     try {
-      const response = await axios.get(`/devices/get-device/${deviceId}`, {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `https://knz04.github.io/midi-mixer/devices/get-device/${deviceId}`,
+        {
+          withCredentials: true,
+        }
+      );
       setFetchedDevice(response.data); // Store fetched device data
       setPresetLoaded(!!response.data.presetId); // Set preset loaded state based on fetched device
       console.log(response.data);
@@ -151,7 +160,7 @@ export default function DeviceList() {
 
       // Send a PUT request with the presetId in the body and deviceId in the URL
       await axios.put(
-        `/devices/add-preset/${selectedDevice}`, // Device ID in the route
+        `https://knz04.github.io/midi-mixer/devices/add-preset/${selectedDevice}`, // Device ID in the route
         { presetId: selectedPreset }, // Preset ID in the request body
         { withCredentials: true }
       );
@@ -174,7 +183,7 @@ export default function DeviceList() {
   const handleRemovePreset = async () => {
     try {
       await axios.put(
-        `/devices/remove-preset/${selectedDevice}`,
+        `https://knz04.github.io/midi-mixer/devices/remove-preset/${selectedDevice}`,
         { presetId: fetchedDevice.presetId },
         { withCredentials: true }
       );
