@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
 import PresetList from "../components/PresetList";
 import DeviceList from "../components/DeviceList";
+import Navbar from "../components/Navbar";
 
 const Dashboard = () => {
   const { user } = useContext(UserContext);
@@ -13,13 +14,14 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen w-screen">
+      <Navbar />
       {/* <div className="absolute top-[20px] right-0 1" style={{ position: "absolute", top: 20, right: 140 }}>
         {!!user && <h1>Hi, {user.name}!</h1>}
       </div> */}
       <div className="flex flex-col flex-1 gap-16">
-        <PresetList />
-        <hr />
         <DeviceList />
+        <hr />
+        <PresetList />
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import React from "react";
+import Mixer from "./Mixer";
 
 export default function PresetDetails({
   fetchedPreset,
@@ -15,6 +16,8 @@ export default function PresetDetails({
       <p className="mt-2">{fetchedPreset.description}</p>
 
       <h3 className="mt-4 text-xl font-medium">Channels:</h3>
+      {/* Pass fetchedPreset.channels to the Mixer component */}
+
       <table className="mt-2 w-full table-auto">
         <thead>
           <tr className="bg-green-500">

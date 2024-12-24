@@ -11,7 +11,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center">
-      <div className="text-4xl font-bold mb-5">SketchMIDI</div>
+      <div className="text-4xl font-bold">SketchMIDI</div>
       <div className="mb-5">
         <Link to="/login">
           <button className="w-36 h-12 border-b-2 border-black">Log In</button>
