@@ -5,6 +5,7 @@ import AddPreset from "./AddPreset";
 import EditPreset from "./EditPreset";
 import PresetDetails from "./PresetDetails";
 import Mixer from "./Mixer";
+import NewMixer from "./NewMixer";
 
 export default function PresetList() {
   const [presets, setPresets] = useState([]);
@@ -76,6 +77,8 @@ export default function PresetList() {
     fetchPresets();
   };
 
+  const handleMessage = () => {};
+
   if (loading) {
     return <div>Loading presets...</div>;
   }
@@ -114,6 +117,7 @@ export default function PresetList() {
           />
         )}
       </div>
+      <NewMixer />
 
       {fetchedPreset && (
         <PresetDetails
