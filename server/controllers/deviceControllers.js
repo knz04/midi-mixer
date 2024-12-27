@@ -33,20 +33,19 @@ function convertChannelsToMidi(channels) {
       throw new Error(`Unknown component type: ${component}`);
     }
 
+    // Calculate the node number
+    const node = `${nodePrefix}${channel - 1}`; // Add 1 to the channel number
+
     // Handle button value conversion (boolean to MIDI standard)
-    let midiValue = value;
-    if (component === "button") {
-      midiValue = value === 0 ? 0 : 127; // 0 becomes 0, non-zero becomes 127
-    }
+    const midiValue = component === "button" ? (value === 0 ? 0 : 127) : value;
 
     // Assemble the MIDI message
-    const node = `${nodePrefix}0`; // Node number is the prefix followed by '0'
-    const midiMessage = `C${channel}N${node}V${midiValue}`;
+    const midiMessage = `C0N${node}V${midiValue}`; // Static 'C0'
 
     return midiMessage;
   });
 
-  // Join all MIDI messages into one string separated by a colon
+  // Join all MIDI messages into one string separated by a semicolon
   return ";" + midiMessages.join(";");
 }
 

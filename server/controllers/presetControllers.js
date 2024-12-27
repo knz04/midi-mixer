@@ -39,58 +39,51 @@ client.on("message", (topic, message) => {
     .split(";")
     .filter((msg) => msg.length > 0);
 
-  // Clear the previous messages
-  latestMidiMessages = [];
+  // Initialize an array to store the converted data
+  const databaseFormatData = [];
 
   // Process each MIDI message
   midiMessages.forEach((midiMessage) => {
-    const channel = midiMessage.match(/C(\d+)/)?.[1];
-    const node = midiMessage.match(/N(\d+)/)?.[1];
-    const velocity = midiMessage.match(/V(\d+)/)?.[1];
+    const channelMatch = midiMessage.match(/C(\d+)/);
+    const nodeMatch = midiMessage.match(/N(\d+)/);
+    const velocityMatch = midiMessage.match(/V(\d+)/);
 
-    if (!channel || !node || !velocity) {
+    if (!channelMatch || !nodeMatch || !velocityMatch) {
       console.error("Invalid MIDI message format");
       return;
     }
 
-    let componentType = null;
-    let value = null;
+    const channel = parseInt(channelMatch[1], 10); // Extract channel as a number
+    const node = nodeMatch[1]; // Extract node as a string
+    const velocity = parseInt(velocityMatch[1], 10); // Extract velocity as a number
 
-    // Determine the component type and process the value
+    // Determine the component type based on the node prefix
+    let componentType = null;
     if (node.startsWith("6")) {
       componentType = "rotary";
-      value = parseInt(velocity, 10); // Use velocity as-is
     } else if (node.startsWith("8")) {
       componentType = "fader";
-      value = parseInt(velocity, 10); // Use velocity as-is
     } else if (node.startsWith("7")) {
       componentType = "button";
-      if (velocity === "0") {
-        value = false;
-      } else if (velocity === "127") {
-        value = true;
-      } else {
-        console.error("Invalid velocity value for button. Must be 0 or 127.");
-        return;
-      }
     } else {
       console.error("Unknown component type.");
       return;
     }
 
-    // Store each parsed MIDI message
-    latestMidiMessages.push({
-      channel: parseInt(channel, 10),
+    // Convert the velocity for button components
+    const value =
+      componentType === "button" ? (velocity === 127 ? true : false) : velocity;
+
+    // Add the parsed data to the array
+    databaseFormatData.push({
+      channel: parseInt(node[1], 10) - 1, // Convert the second digit of node to channel index (subtract 1)
       component: componentType,
       value,
     });
-
-    // console.log(
-    //   `Stored MIDI Message: ${JSON.stringify(
-    //     latestMidiMessages[latestMidiMessages.length - 1]
-    //   )}`
-    // );
   });
+
+  // Log the final converted data
+  console.log("Converted to database format:", databaseFormatData);
 });
 
 // Create Preset: Use the stored MIDI message(s)
