@@ -3,10 +3,44 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const SavePreset = (channels) => {
+  console.log("to save: ", channels);
   const [presets, setPresets] = useState([]);
   const [selectedPreset, setSelectedPreset] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  // Function to convert channels into the required database format
+  const convertToDatabaseFormat = (input) => {
+    const result = [];
+    input.forEach((channel, index) => {
+      const channelIndex = index + 1; // Channels are 1-indexed
+
+      if (channel.activeRotary) {
+        result.push({
+          channel: channelIndex,
+          component: "rotary",
+          value: channel.rotary,
+        });
+      }
+
+      if (channel.activeFader) {
+        result.push({
+          channel: channelIndex,
+          component: "fader",
+          value: channel.fader,
+        });
+      }
+
+      if (channel.activeButton) {
+        result.push({
+          channel: channelIndex,
+          component: "button",
+          value: channel.button,
+        });
+      }
+    });
+    return result;
+  };
 
   // Fetch presets from the backend
   const fetchPresets = async () => {
@@ -32,7 +66,6 @@ const SavePreset = (channels) => {
     const selectedPresetId = event.target.value;
     setSelectedPreset(selectedPresetId);
     localStorage.setItem("selectedPresetId", selectedPresetId);
-    // Optionally, you can fetch details for the selected preset
   };
 
   // Open form for creating a new preset
@@ -45,31 +78,31 @@ const SavePreset = (channels) => {
     setShowForm(false);
   };
 
-  // Example function to save the preset (this can be triggered by a save button)
+  // Save preset to the backend
   const savePreset = async (event) => {
     event.preventDefault();
-    console.log(selectedPreset);
-    console.log(channels.channels);
+    console.log("selectedPreset: ", selectedPreset);
+    console.log("channels.channels: ", channels.channels);
 
     if (!selectedPreset) {
       toast.error("Please select a preset first.");
       return;
     }
 
+    // Convert channels to database format
+    const formattedChannels = convertToDatabaseFormat(channels.channels);
+    console.log("Formatted channels: ", formattedChannels);
+
     try {
-      // Sending a PUT request to update the channels of the preset with the provided presetId
       const response = await axios.put(
-        `/presets/${selectedPreset}`, // Use the selectedPreset as the presetId in the URL
-        channels.channels,
+        `/presets/${selectedPreset}`,
+        { channels: formattedChannels },
         { withCredentials: true }
       );
-
-      // If the request is successful
       toast.success("Preset channels updated successfully!");
-      handleCloseForm(); // Close the form after successful update
-      fetchPresets(); // Optionally refresh the preset list after update
+      handleCloseForm();
+      fetchPresets();
     } catch (error) {
-      // If an error occurs during the request
       console.error("Error updating preset channels:", error);
       toast.error("Failed to update preset channels.");
     }
@@ -81,7 +114,6 @@ const SavePreset = (channels) => {
 
   return (
     <div>
-      {/* Button to open the form */}
       <button
         onClick={handleOpenForm}
         className="mt-4 p-2 bg-yellow-500 text-white rounded"
@@ -89,13 +121,11 @@ const SavePreset = (channels) => {
         Update Preset
       </button>
 
-      {/* Display the form if showForm is true */}
       {showForm && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded shadow-lg w-80">
             <h3 className="text-lg font-semibold mb-4">Update Preset</h3>
 
-            {/* Dropdown to select preset */}
             <div className="mb-4">
               <select
                 value={selectedPreset}
@@ -113,7 +143,6 @@ const SavePreset = (channels) => {
               </select>
             </div>
 
-            {/* Save and Cancel buttons */}
             <div className="flex justify-between">
               <button
                 onClick={savePreset}

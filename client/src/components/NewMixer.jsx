@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Channel from "./Channel";
 import SavePreset from "./SavePreset";
 import mqtt from "mqtt";
@@ -16,7 +16,7 @@ const options = {
   reconnectPeriod: 1000, // Auto-reconnect every 1 second
 };
 
-const NewMixer = ({ state, preset, device, setState }) => {
+const NewMixer = ({ state, update, preset, device, setState, setUpdate }) => {
   const topic = `midi/${device}/update`;
   const [mqttMessage, setMqttMessage] = useState("");
   const [channels, setChannels] = useState([
@@ -69,6 +69,7 @@ const NewMixer = ({ state, preset, device, setState }) => {
       activeButton: false,
     },
   ]);
+  const latestChannelsRef = useRef(channels);
 
   // MQTT Client Logic
   useEffect(() => {
@@ -92,7 +93,6 @@ const NewMixer = ({ state, preset, device, setState }) => {
 
     client.on("message", (topic, message) => {
       const midiMessage = message.toString();
-      // Example: Parse MIDI message C0N60V1
       const channelIndex = parseInt(midiMessage.slice(4));
       const node = parseInt(midiMessage.slice(3)); // Node number
       const velocity = parseInt(midiMessage.slice(6)); // Velocity (button state)
@@ -103,23 +103,22 @@ const NewMixer = ({ state, preset, device, setState }) => {
         velocity,
       });
 
-      // Update state to true when a message is received
       setState(true);
+      setUpdate(false);
 
       setChannels((prev) => {
         const updatedChannels = [...prev];
         const channel = updatedChannels[channelIndex];
-        console.log("channel: ", channel);
 
         if (node >= 60 && node <= 69) {
           channel.rotary = velocity;
-          channel.activeRotary = true; // Mark rotary as active
+          channel.activeRotary = true;
         } else if (node >= 80 && node <= 89) {
           channel.fader = velocity;
-          channel.activeFader = true; // Mark fader as active
+          channel.activeFader = true;
         } else if (node >= 70 && node <= 79) {
           channel.button = velocity;
-          channel.activeButton = true; // Button active if velocity is 127
+          channel.activeButton = true;
         }
 
         return updatedChannels;
@@ -136,13 +135,10 @@ const NewMixer = ({ state, preset, device, setState }) => {
     };
   }, [setState]);
 
-  // New mapping for preset data transformation
   const transformPresetData = (presetData) => {
     const channels = [];
 
-    // Iterate over the preset data to map components to channels
     presetData.forEach(({ channel, component, value }) => {
-      // Ensure the channel exists in the array
       if (!channels[channel - 1]) {
         channels[channel - 1] = {
           rotary: 0,
@@ -154,7 +150,6 @@ const NewMixer = ({ state, preset, device, setState }) => {
         };
       }
 
-      // Map components to the appropriate properties
       if (component === "rotary") {
         channels[channel - 1].rotary = value;
         channels[channel - 1].activeRotary = true;
@@ -163,11 +158,10 @@ const NewMixer = ({ state, preset, device, setState }) => {
         channels[channel - 1].activeFader = true;
       } else if (component === "button") {
         channels[channel - 1].button = value;
-        channels[channel - 1].activeButton = value === 127; // Button active if value is 127
+        channels[channel - 1].activeButton = value === 127;
       }
     });
 
-    // Fill any undefined channels with default values
     for (let i = 0; i < 6; i++) {
       if (!channels[i]) {
         channels[i] = {
@@ -184,21 +178,24 @@ const NewMixer = ({ state, preset, device, setState }) => {
     return channels;
   };
 
-  // Use preset data transformation
   const transformedPresetData = preset ? transformPresetData(preset) : [];
-  console.log("transformedPresetData: ", transformedPresetData);
-
-  // Determine which data to use based on 'state'
   const channelsToUse = state ? channels : transformedPresetData;
 
-  // Function to handle updates from child
   const handleChannelUpdate = (channelIndex, updatedChannel) => {
     setChannels((prevChannels) => {
       const newChannels = [...prevChannels];
-      newChannels[channelIndex] = updatedChannel; // Update the specific channel
+      newChannels[channelIndex] = updatedChannel;
+
+      // Store the latest channels in the ref
+      latestChannelsRef.current = newChannels;
+      setUpdate(true);
+
+      console.log("New channels state:", newChannels);
       return newChannels;
     });
   };
+
+  const toSave = update ? latestChannelsRef.current : channelsToUse;
 
   useEffect(() => {
     console.log("Current channel state in parent:", channelsToUse);
@@ -218,14 +215,18 @@ const NewMixer = ({ state, preset, device, setState }) => {
               activeRotary={channel.activeRotary}
               activeFader={channel.activeFader}
               activeButton={channel.activeButton}
-              onUpdate={(updatedChannel) =>
-                handleChannelUpdate(index, updatedChannel)
-              }
+              onUpdate={(updatedChannel) => {
+                handleChannelUpdate(index, updatedChannel); // Update the channel state
+              }}
             />
           ))}
         </div>
 
-        {/* <SavePreset channels={channelsToUse} /> */}
+        {/* Render SavePreset only when channels are properly updated */}
+        {channelsToUse.some(
+          (channel) =>
+            channel.activeRotary || channel.activeFader || channel.activeButton
+        ) && <SavePreset channels={toSave} />}
       </div>
     </div>
   );

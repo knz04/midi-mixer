@@ -14,6 +14,7 @@ export default function PresetList({ fetchedDevice }) {
   const [showForm, setShowForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [state, setState] = useState(false);
+  const [update, setUpdate] = useState(false);
 
   const fetchPresets = async () => {
     try {
@@ -55,7 +56,8 @@ export default function PresetList({ fetchedDevice }) {
         withCredentials: true,
       });
       setFetchedPreset(response.data);
-      setState(false); // Reset state after fetching preset
+      setState(false);
+      setUpdate(false); // Reset state after fetching preset
     } catch (error) {
       console.error("Error fetching preset:", error);
       toast.error("Failed to fetch preset.");
@@ -67,6 +69,7 @@ export default function PresetList({ fetchedDevice }) {
     setSelectedPreset(selectedPresetId);
     localStorage.setItem("selectedPresetId", selectedPresetId);
     fetchPresetDetails(selectedPresetId);
+    console.log("Selected preset:", selectedPresetId);
   };
 
   const handleOpenForm = () => {
@@ -175,6 +178,8 @@ export default function PresetList({ fetchedDevice }) {
         <NewMixer
           state={state}
           setState={setState}
+          update={update}
+          setUpdate={setUpdate}
           preset={fetchedPreset.channels}
           device={fetchedDevice.pairId}
         />

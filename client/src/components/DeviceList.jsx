@@ -18,6 +18,7 @@ export default function DeviceList() {
   const [presetLoaded, setPresetLoaded] = useState(false); // Track if preset is loaded
   const [presets, setPresets] = useState([]); // State for presets
   const [fetchedPreset, setFetchedPreset] = useState("");
+  const [selectedPresetId, setSelectedPresetId] = useState("");
 
   // Fetch list of devices
   const fetchDevices = async () => {
@@ -116,16 +117,16 @@ export default function DeviceList() {
     fetchDeviceDetails(selectedDeviceId); // Fetch details of the selected device
   };
 
-  const handlePresetChange = (event) => {
-    const selectedPresetId = event.target.value;
-    setSelectedPreset(selectedPresetId);
-    localStorage.setItem("selectedPresetId", selectedPresetId);
-    fetchPresetDetails(selectedPresetId);
-  };
+  // const handlePresetChange = (event) => {
+  //   const selectedPresetId = event.target.value;
+  //   setSelectedPreset(selectedPresetId);
+  //   localStorage.setItem("selectedPresetId", selectedPresetId);
+  //   fetchPresetDetails(selectedPresetId);
+  // };
 
-  const handleOpenForm = () => {
-    setShowForm(true);
-  };
+  // const handleOpenForm = () => {
+  //   setShowForm(true);
+  // };
 
   const handleOpenEditForm = () => {
     setShowEditForm(true);
@@ -148,10 +149,15 @@ export default function DeviceList() {
     }
   }, []);
 
+  const handleSelectedPresetChange = (presetId) => {
+    setSelectedPreset(presetId); // Update the state in the parent
+    console.log("Selected Preset ID in Parent:", presetId);
+  };
+
   const handleImportPreset = async () => {
     try {
       if (!selectedPreset) {
-        toast.error("Please select a preset."); // Notify user if no preset is selected
+        toast.error("Please select a preset.");
         return;
       }
 
@@ -163,22 +169,15 @@ export default function DeviceList() {
       console.log("Selected Device:", selectedDevice);
       console.log("Selected Preset:", selectedPreset);
 
-      // Send a PUT request with the presetId in the body and deviceId in the URL
       await axios.put(
-        `/devices/add-preset/${selectedDevice}`, // Device ID in the route
-        { presetId: selectedPreset }, // Preset ID in the request body
+        `/devices/add-preset/${selectedDevice}`, // Use selectedDevice
+        { presetId: selectedPreset }, // Correct the variable name here
         { withCredentials: true }
       );
 
       toast.success("Preset loaded into device successfully.");
-
-      // Clear selected device and fetched device state
       setSelectedDevice("");
-      setFetchedDevice(null);
-      setSelectedPreset("");
       localStorage.removeItem("selectedDevice");
-      localStorage.removeItem("selectedPreset");
-      localStorage.removeItem("fetchedDevice");
     } catch (error) {
       console.error("Error loading preset into device:", error);
       toast.error("Failed to load preset into device.");
@@ -189,18 +188,12 @@ export default function DeviceList() {
     try {
       await axios.put(
         `/devices/remove-preset/${selectedDevice}`,
-        { presetId: fetchedDevice.presetId },
+        { presetId: fetchedDevice.presetId }, // Ensure presetId exists
         { withCredentials: true }
       );
       toast.success("Preset removed successfully.");
-
-      // Clear selected device and fetched device state
       setSelectedDevice("");
-      setFetchedDevice(null);
-      setSelectedPreset("");
       localStorage.removeItem("selectedDevice");
-      localStorage.removeItem("selectedPreset");
-      localStorage.removeItem("fetchedDevice");
     } catch (error) {
       console.error(error);
       toast.error("Failed to remove preset.");
@@ -257,7 +250,9 @@ export default function DeviceList() {
             </select>
 
             {/* Display DeviceDetails for selected device */}
-            {fetchedDevice && <DeviceDetails fetchedDevice={fetchedDevice} />}
+            {fetchedDevice && selectedDevice && (
+              <DeviceDetails fetchedDevice={fetchedDevice} />
+            )}
           </div>
 
           <div className="pt-2">
@@ -304,7 +299,12 @@ export default function DeviceList() {
       </div>
 
       <div>
-        {selectedDevice && <PresetList fetchedDevice={fetchedDevice} />}
+        {selectedDevice && (
+          <PresetList
+            fetchedDevice={fetchedDevice}
+            onPresetChange={handleSelectedPresetChange}
+          />
+        )}
       </div>
 
       <div>
