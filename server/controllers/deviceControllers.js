@@ -83,7 +83,7 @@ const createDevice = async (req, res) => {
     }
 
     const userId = user.id;
-    const { deviceName, macAdd } = req.body;
+    const { deviceName, pairId } = req.body;
 
     try {
       // Validate required fields
@@ -103,7 +103,7 @@ const createDevice = async (req, res) => {
       // Create the device in the database
       const device = await Device.create({
         deviceName,
-        macAdd,
+        pairId,
         userId,
       });
 
@@ -146,7 +146,7 @@ const getDevice = async (req, res) => {
 };
 
 const updateDevice = async (req, res) => {
-  const { deviceName, macAdd } = req.body; // Get fields from request body
+  const { deviceName, pairId } = req.body; // Get fields from request body
 
   try {
     // Check if device exists
@@ -159,7 +159,7 @@ const updateDevice = async (req, res) => {
     // Update device data
     const updatedDevice = await Device.findByIdAndUpdate(
       id,
-      { deviceName, macAdd },
+      { deviceName, pairId },
       { new: true }
     );
     res.status(200).json(updatedDevice);

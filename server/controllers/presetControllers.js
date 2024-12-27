@@ -16,7 +16,7 @@ const client = mqtt.connect(mqttOptions);
 
 client.on("connect", () => {
   console.log("Ready to receive.");
-  const topic = "midi/+/messages"; // Subscribe to all topics under 'midi'
+  const topic = "midi/+/preset"; // Subscribe to all topics under 'midi'
   client.subscribe(topic, (err) => {
     if (err) {
       console.error("Failed to subscribe:", err);

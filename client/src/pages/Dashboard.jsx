@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
-import PresetList from "../components/PresetList";
+// import PresetList from "../components/PresetList";
 import DeviceList from "../components/DeviceList";
 import Navbar from "../components/Navbar";
 
@@ -20,8 +20,6 @@ const Dashboard = () => {
       </div> */}
       <div className="flex flex-col flex-1 gap-16">
         <DeviceList />
-        <hr />
-        <PresetList />
       </div>
     </div>
   );

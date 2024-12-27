@@ -4,6 +4,8 @@ import toast from "react-hot-toast";
 import AddDevice from "./AddDevice";
 import EditDevice from "./EditDevice";
 import { DeviceDetails } from "./DeviceDetails"; // Import DeviceDetails component
+import PresetList from "./PresetList";
+import PresetDetails from "./PresetDetails";
 
 export default function DeviceList() {
   const [devices, setDevices] = useState([]);
@@ -15,6 +17,7 @@ export default function DeviceList() {
   const [selectedPreset, setSelectedPreset] = useState(""); // Preset ID state
   const [presetLoaded, setPresetLoaded] = useState(false); // Track if preset is loaded
   const [presets, setPresets] = useState([]); // State for presets
+  const [fetchedPreset, setFetchedPreset] = useState("");
 
   // Fetch list of devices
   const fetchDevices = async () => {
@@ -114,7 +117,10 @@ export default function DeviceList() {
   };
 
   const handlePresetChange = (event) => {
-    setSelectedPreset(event.target.value); // Update the selected preset state
+    const selectedPresetId = event.target.value;
+    setSelectedPreset(selectedPresetId);
+    localStorage.setItem("selectedPresetId", selectedPresetId);
+    fetchPresetDetails(selectedPresetId);
   };
 
   const handleOpenForm = () => {
@@ -133,6 +139,14 @@ export default function DeviceList() {
   const handleDeviceCreated = () => {
     fetchDevices(); // Refresh devices list after adding a new device
   };
+
+  useEffect(() => {
+    const savedPresetId = localStorage.getItem("selectedPresetId");
+    if (savedPresetId) {
+      setSelectedPreset(savedPresetId);
+      fetchPresetDetails(savedPresetId);
+    }
+  }, []);
 
   const handleImportPreset = async () => {
     try {
@@ -193,88 +207,25 @@ export default function DeviceList() {
     }
   };
 
+  const fetchPresetDetails = async (presetId) => {
+    try {
+      const response = await axios.get(`/presets/get-preset/${presetId}`, {
+        withCredentials: true,
+      });
+      setFetchedPreset(response.data); // Update the state with fetched data
+    } catch (error) {
+      console.error("Error fetching preset:", error);
+      toast.error("Failed to fetch preset.");
+    }
+  };
+
   if (loading) {
     return <div>Loading devices...</div>;
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Your Devices</h1>
-      {devices.length === 0 ? (
-        <div className="flex flex-col items-center">
-          <p>No devices available.</p>
-        </div>
-      ) : (
-        <>
-          {/* Dropdown for selecting a device */}
-          <select
-            value={selectedDevice}
-            onChange={handleDeviceChange}
-            className="mb-4 p-2 border rounded hover:border-blue-500 transition"
-          >
-            <option value="" disabled>
-              Select a device
-            </option>
-            {devices.map((device) => (
-              <option key={device._id} value={device._id}>
-                {device.deviceName}
-              </option>
-            ))}
-          </select>
-
-          {/* Display DeviceDetails for selected device */}
-          {fetchedDevice && <DeviceDetails fetchedDevice={fetchedDevice} />}
-
-          {/* Preset selection dropdown */}
-          {presets.length > 0 && (
-            <select
-              value={selectedPreset}
-              onChange={handlePresetChange}
-              className="mb-4 p-2 border rounded hover:border-blue-500 transition"
-            >
-              <option value="" disabled>
-                Select a preset
-              </option>
-              {presets.map((preset) => (
-                <option key={preset._id} value={preset._id}>
-                  {preset.presetName}{" "}
-                  {/* Assuming presets have a name property */}
-                </option>
-              ))}
-            </select>
-          )}
-
-          {/* Import and Remove Preset buttons */}
-          {selectedDevice && fetchedDevice && (
-            <div className="mb-4">
-              <button
-                onClick={handleImportPreset}
-                className="mr-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-              >
-                Import Preset
-              </button>
-              <button
-                onClick={handleRemovePreset}
-                className="p-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-              >
-                Remove Preset
-              </button>
-            </div>
-          )}
-
-          {/* Edit Device button that shows up after a device is selected */}
-          {selectedDevice && (
-            <button
-              onClick={handleOpenEditForm}
-              className="mb-4 p-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
-            >
-              Edit Device
-            </button>
-          )}
-        </>
-      )}
-
-      <br />
+    <div className="p-4 pt-12">
+      <h1 className="text-2xl font-bold mb-4">Devices</h1>
       <button
         onClick={() => setShowForm(!showForm)} // Toggle form visibility
         className="mt-4 p-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
@@ -282,6 +233,46 @@ export default function DeviceList() {
         {showForm ? "Add a new device" : "Add a new device"}{" "}
         {/* Change button text based on form visibility */}
       </button>
+      {devices.length === 0 ? (
+        <div className="flex flex-col items-center">
+          <p>No devices available.</p>
+        </div>
+      ) : (
+        <div>
+          {/* Dropdown for selecting a device */}
+          <div className="pt-4">
+            <select
+              value={selectedDevice}
+              onChange={handleDeviceChange}
+              className="mb-4 p-2 border rounded hover:border-blue-500 transition"
+            >
+              <option value="" disabled>
+                Select a device
+              </option>
+              {devices.map((device) => (
+                <option key={device._id} value={device._id}>
+                  {device.deviceName}
+                </option>
+              ))}
+            </select>
+
+            {/* Display DeviceDetails for selected device */}
+            {fetchedDevice && <DeviceDetails fetchedDevice={fetchedDevice} />}
+          </div>
+
+          <div className="pt-2">
+            {/* Edit Device button that shows up after a device is selected */}
+            {selectedDevice && (
+              <button
+                onClick={handleOpenEditForm}
+                className="mb-4 p-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+              >
+                Edit Device
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="flex items-start">
         {/* Add Device form */}
@@ -305,6 +296,33 @@ export default function DeviceList() {
                 onDelete={fetchDevices} // Refresh the device list after deletion
               />
             </div>
+          </div>
+        )}
+      </div>
+      <div className="py-8">
+        <hr />
+      </div>
+
+      <div>
+        {selectedDevice && <PresetList fetchedDevice={fetchedDevice} />}
+      </div>
+
+      <div>
+        {/* Import and Remove Preset buttons */}
+        {selectedDevice && fetchedDevice && (
+          <div className="mb-4">
+            <button
+              onClick={handleImportPreset}
+              className="mr-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+            >
+              Load Preset
+            </button>
+            <button
+              onClick={handleRemovePreset}
+              className="p-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+            >
+              Remove Preset
+            </button>
           </div>
         )}
       </div>

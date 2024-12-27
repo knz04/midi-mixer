@@ -1,18 +1,22 @@
 import { useContext, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
 import COVER_IMAGE from "../assets/home.jpeg";
 import "../styles/Login.css";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { setUser } = useContext(UserContext); // Access the setUser function from context
+  const { user, setUser } = useContext(UserContext); // Access the setUser function from context
   const [data, setData] = useState({
     email: "",
     password: "",
   });
+
+  if (user) {
+    return <Navigate to="/dashboard" />;
+  }
 
   const loginUser = async (e) => {
     e.preventDefault();

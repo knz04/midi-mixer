@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const deviceSchema = new Schema({
   deviceName: String,
-  macAdd: { type: String, unique: true },
+  pairId: { type: String, unique: true },
   userId: {
     type: Schema.Types.ObjectId,
     ref: "User",

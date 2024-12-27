@@ -9,7 +9,7 @@ export function DeviceDetails({ fetchedDevice }) {
     <div>
       <strong>Device Name:</strong> {fetchedDevice.deviceName}
       <br />
-      <strong>MAC Address:</strong> {fetchedDevice.macAdd}
+      <strong>Pair ID:</strong> {fetchedDevice.pairId}
     </div>
   );
 }

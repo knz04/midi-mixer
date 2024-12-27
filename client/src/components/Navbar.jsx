@@ -22,7 +22,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="w-screen h-32 md:h-16 flex flex-col md:flex-row relative justify-between p-2">
+    <nav className="w-screen h-32 md:h-16 flex flex-col md:flex-row border-b-[1px] relative justify-between p-2">
       <span className="h-8 object-contain text-2xl font-bold">SketchMIDI</span>
       {user && (
         <div className="flex flex-row items-center justify-center">

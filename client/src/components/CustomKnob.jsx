@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 
-const CustomKnob = ({ onChange, value }) => {
+const CustomKnob = ({ onChange, value, disabled }) => {
   const knobRef = useRef(null);
   const ringRef = useRef(null);
   const [lastRot, setLastRot] = useState(0); // Default rotation
@@ -18,6 +18,7 @@ const CustomKnob = ({ onChange, value }) => {
   }, [value]);
 
   const handlePointerDown = (event) => {
+    if (disabled) return; // Prevent interaction if disabled
     document.addEventListener("pointermove", handlePointerMove);
     document.addEventListener("pointerup", handlePointerUp);
     knobRef.current.startY = event.clientY;
@@ -54,7 +55,12 @@ const CustomKnob = ({ onChange, value }) => {
   };
 
   return (
-    <div className="knob-container" onPointerDown={handlePointerDown}>
+    <div
+      className={`knob-container ${
+        disabled ? "opacity-50 pointer-events-none" : ""
+      }`}
+      onPointerDown={handlePointerDown}
+    >
       <div className="ring"></div>
       <div className="ring-fill" ref={ringRef}></div>
       <div className="space"></div>
