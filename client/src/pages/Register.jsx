@@ -15,7 +15,7 @@ export default function Register() {
   });
 
   if (user) {
-    return <Navigate to="/dashboard" />;
+    return <Navigate to="/" />;
   }
 
   const registerUser = async (e) => {

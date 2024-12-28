@@ -14,7 +14,7 @@ export default function Login() {
   });
 
   if (user) {
-    return <Navigate to="/dashboard" />;
+    return <Navigate to="/" />;
   }
 
   const loginUser = async (e) => {
