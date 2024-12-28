@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate, Navigate } from "react-router-dom";
@@ -14,9 +14,12 @@ export default function Register() {
     password: "",
   });
 
-  if (user) {
-    return <Navigate to="/dashboard" />;
-  }
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const registerUser = async (e) => {
     e.preventDefault();

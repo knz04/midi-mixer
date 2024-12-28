@@ -1,13 +1,17 @@
-import { useContext } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
 
 export default function Home() {
   const { user } = useContext(UserContext);
+  const navigate = useNavigate();
 
-  if (user) {
-    return <Navigate to="/dashboard" />;
-  }
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center">
