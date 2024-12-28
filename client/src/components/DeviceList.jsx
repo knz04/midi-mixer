@@ -22,9 +22,12 @@ export default function DeviceList() {
   // Fetch list of devices
   const fetchDevices = async () => {
     try {
-      const response = await axios.get("/devices/:id", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        "https://knz04.github.io/midi-mixer/devices/:id",
+        {
+          withCredentials: true,
+        }
+      );
       setDevices(response.data);
     } catch (error) {
       console.error(error);
@@ -36,9 +39,12 @@ export default function DeviceList() {
   // Fetch list of presets
   const fetchPresets = async () => {
     try {
-      const response = await axios.get("/presets/:id", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        "https://knz04.github.io/midi-mixer/presets/:id",
+        {
+          withCredentials: true,
+        }
+      );
       setPresets(response.data); // Assuming response.data contains an array of presets
     } catch (error) {
       console.error(error);
@@ -97,9 +103,12 @@ export default function DeviceList() {
   // Fetch details of selected device
   const fetchDeviceDetails = async (deviceId) => {
     try {
-      const response = await axios.get(`/devices/get-device/${deviceId}`, {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `https://knz04.github.io/midi-mixer/devices/get-device/${deviceId}`,
+        {
+          withCredentials: true,
+        }
+      );
       setFetchedDevice(response.data); // Store fetched device data
       setPresetLoaded(!!response.data.presetId); // Set preset loaded state based on fetched device
       console.log(response.data);
@@ -114,17 +123,6 @@ export default function DeviceList() {
     setSelectedDevice(selectedDeviceId);
     fetchDeviceDetails(selectedDeviceId); // Fetch details of the selected device
   };
-
-  // const handlePresetChange = (event) => {
-  //   const selectedPresetId = event.target.value;
-  //   setSelectedPreset(selectedPresetId);
-  //   localStorage.setItem("selectedPresetId", selectedPresetId);
-  //   fetchPresetDetails(selectedPresetId);
-  // };
-
-  // const handleOpenForm = () => {
-  //   setShowForm(true);
-  // };
 
   const handleOpenEditForm = () => {
     setShowEditForm(true);
@@ -189,22 +187,6 @@ export default function DeviceList() {
     setSelectedDevice(""); // Optionally clear selected device as well
     fetchDevices(); // Refresh devices list after deletion
   };
-
-  // const handleRemovePreset = async () => {
-  //   try {
-  //     await axios.put(
-  //       `/devices/remove-preset/${selectedDevice}`,
-  //       { presetId: fetchedDevice.presetId }, // Ensure presetId exists
-  //       { withCredentials: true }
-  //     );
-  //     toast.success("Preset removed successfully.");
-  //     setSelectedDevice("");
-  //     localStorage.removeItem("selectedDevice");
-  //   } catch (error) {
-  //     console.error(error);
-  //     toast.error("Failed to remove preset.");
-  //   }
-  // };
 
   const fetchPresetDetails = async (presetId) => {
     try {

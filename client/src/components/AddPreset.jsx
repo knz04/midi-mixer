@@ -55,14 +55,17 @@ const AddPreset = ({ onClose, preset }) => {
     };
 
     try {
-      const response = await fetch("http://localhost:8000/presets/new", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(presetData),
-        credentials: "include",
-      });
+      const response = await fetch(
+        "https://knz04.github.io/midi-mixer/presets/new",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(presetData),
+          credentials: "include",
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();

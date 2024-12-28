@@ -3,7 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
-import COVER_IMAGE from "../assets/home.jpeg";
+import COVER_IMAGE from "../../public/assets/home.jpeg";
 import "../styles/Login.css";
 
 export default function Login() {
@@ -22,7 +22,10 @@ export default function Login() {
     e.preventDefault();
     const { email, password } = data;
     try {
-      const { data } = await axios.post("/login", { email, password });
+      const { data } = await axios.post(
+        "https://knz04.github.io/midi-mixer/login",
+        { email, password }
+      );
       if (data.error) {
         toast.error(data.error);
       } else {
@@ -47,9 +50,9 @@ export default function Login() {
         <img src={COVER_IMAGE} className="w-full h-full object-cover" />
       </div>
 
-      <div className="w-1/2 h-full bg-[#FFFFFF] flex flex-col p-28 justify-between">
+      <div className="w-1/2 h-full bg-[#FFFFFF] flex flex-col p-20 justify-between">
         <form onSubmit={loginUser}>
-          <div className="w-full my-[60px] flex flex-col max-w-[500px]">
+          <div className="w-full my-[100px] flex flex-col max-w-[500px]">
             <div className="w-full flex flex-col mb-[100px]">
               <h3 className="text-2x1 font-semibold mb-2">Login</h3>
               <p className="text-base mb-2">Welcome back!</p>

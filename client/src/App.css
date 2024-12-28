@@ -1,6 +1,6 @@
 @font-face {
   font-family: "SketchMIDI";
-  src: url("./assets/SketchMIDI.ttf") format("truetype");
+  src: url("../public/assets/SketchMIDI.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }

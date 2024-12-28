@@ -54,9 +54,12 @@ export default function PresetList({ fetchedDevice, onPresetChange }) {
 
   const fetchPresetDetails = async (presetId) => {
     try {
-      const response = await axios.get(`/presets/get-preset/${presetId}`, {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `https://knz04.github.io/midi-mixer/presets/get-preset/${presetId}`,
+        {
+          withCredentials: true,
+        }
+      );
       setFetchedPreset(response.data);
       setState(false);
       setUpdate(false); // Reset state after fetching preset

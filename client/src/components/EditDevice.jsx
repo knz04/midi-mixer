@@ -40,7 +40,7 @@ export default function EditDevice({ device, onClose, onUpdate, onDelete }) {
 
     try {
       const response = await axios.put(
-        `/devices/${device._id}`,
+        `https://knz04.github.io/midi-mixer/devices/${device._id}`,
         { deviceName }, // Only update deviceName
         { withCredentials: true }
       );
@@ -56,7 +56,10 @@ export default function EditDevice({ device, onClose, onUpdate, onDelete }) {
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this device?")) {
       try {
-        await axios.delete(`/devices/${device._id}`, { withCredentials: true });
+        await axios.delete(
+          `https://knz04.github.io/midi-mixer/devices/${device._id}`,
+          { withCredentials: true }
+        );
         toast.success("Device deleted successfully!");
 
         onDelete(); // Trigger refresh on the parent component
