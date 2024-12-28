@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import { Navigate } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
 // import PresetList from "../components/PresetList";
 import DeviceList from "../components/DeviceList";
@@ -7,10 +7,14 @@ import Navbar from "../components/Navbar";
 
 const Dashboard = () => {
   const { user } = useContext(UserContext);
+  const navigate = useNavigate();
 
-  if (!user) {
-    return <Navigate to="/" />;
-  }
+  useEffect(() => {
+    if (!user) {
+      navigate("/");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   return (
     <div className="min-h-screen w-screen">
