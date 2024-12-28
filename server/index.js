@@ -8,6 +8,7 @@ const authRoutes = require("./routes/authRoutes");
 const presetRoutes = require("./routes/presetRoutes");
 const deviceRoutes = require("./routes/deviceRoutes");
 
+// database connection
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => console.log("Database connected"))
@@ -19,7 +20,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: "https://knz04.github.io/midi-mixer", // Your frontend URL
+    origin: ["http://localhost:5173/", "https://www.sketchmidi.cc/"], // Your frontend URL
     credentials: true, // Allow cookies
   })
 );
