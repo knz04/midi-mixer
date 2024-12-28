@@ -3,7 +3,6 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
-import COVER_IMAGE from "../../public/assets/home.jpeg";
 import "../styles/Login.css";
 
 export default function Login() {
@@ -47,7 +46,7 @@ export default function Login() {
             SketchMIDI
           </h1>
         </div>
-        <img src={COVER_IMAGE} className="w-full h-full object-cover" />
+        <img src="/assets/home.jpeg" className="w-full h-full object-cover" />
       </div>
 
       <div className="w-1/2 h-full bg-[#FFFFFF] flex flex-col p-20 justify-between">
