@@ -55,7 +55,7 @@ export default function PresetList({ fetchedDevice, onPresetChange }) {
   const fetchPresetDetails = async (presetId) => {
     try {
       const response = await axios.get(
-        `https://knz04.github.io/midi-mixer/presets/get-preset/${presetId}`,
+        `https://api.sketchmidi.cc/presets/get-preset/${presetId}`,
         {
           withCredentials: true,
         }

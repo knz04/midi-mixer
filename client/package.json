@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://knz04.github.io/midi-mixer/",
+  "homepage": "https://api.sketchmidi.cc/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

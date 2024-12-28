@@ -12,7 +12,7 @@ const AddDevice = ({ onClose }) => {
     const fetchDevices = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/devices/" + localStorage.getItem("userId"),
+          "https://api.sketchmidi.cc/devices/" + localStorage.getItem("userId"),
           { withCredentials: true }
         );
         setDevices(response.data);
@@ -47,7 +47,7 @@ const AddDevice = ({ onClose }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/devices/new",
+        "https://api.sketchmidi.cc/devices/new",
         deviceData,
         { withCredentials: true }
       );

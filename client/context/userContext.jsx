@@ -11,10 +11,9 @@ export const UserContextProvider = ({ children }) => {
     // Fetch the user profile when the component is mounted
     const fetchUser = async () => {
       try {
-        const { data } = await axios.get(
-          "https://knz04.github.io/midi-mixer/profile",
-          { withCredentials: true }
-        );
+        const { data } = await axios.get("https://api.sketchmidi.cc/profile", {
+          withCredentials: true,
+        });
         setUser(data);
       } catch (err) {
         setUser(null);

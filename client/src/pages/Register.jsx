@@ -23,10 +23,11 @@ export default function Register() {
     e.preventDefault();
     const { name, email, password } = data;
     try {
-      const { data } = await axios.post(
-        "https://knz04.github.io/midi-mixer/register",
-        { name, email, password }
-      );
+      const { data } = await axios.post("https://api.sketchmidi.cc/register", {
+        name,
+        email,
+        password,
+      });
       if (data.error) {
         toast.error(data.error);
       } else {

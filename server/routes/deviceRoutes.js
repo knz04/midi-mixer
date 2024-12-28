@@ -11,13 +11,6 @@ const {
   getDeviceId,
 } = require("../controllers/deviceControllers");
 
-router.use(
-  cors({
-    credentials: true,
-    origin: "https://knz04.github.io/midi-mixer",
-  })
-);
-
 router.post("/new", createDevice);
 router.get("/:userId", getDevice);
 router.put("/:id", updateDevice);

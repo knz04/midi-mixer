@@ -6,9 +6,7 @@ const GetPreset = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          "https://knz04.github.io/midi-mixer/api/presets"
-        );
+        const response = await fetch("https://api.sketchmidi.cc/api/presets");
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }

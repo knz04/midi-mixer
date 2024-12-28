@@ -20,7 +20,7 @@ const AddPreset = ({ onClose, preset }) => {
     const fetchPresets = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/presets/" + localStorage.getItem("userId"),
+          "https://api.sketchmidi.cc/presets/" + localStorage.getItem("userId"),
           { withCredentials: true }
         );
         setPresets(response.data);
@@ -55,17 +55,14 @@ const AddPreset = ({ onClose, preset }) => {
     };
 
     try {
-      const response = await fetch(
-        "https://knz04.github.io/midi-mixer/presets/new",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(presetData),
-          credentials: "include",
-        }
-      );
+      const response = await fetch("https://api.sketchmidi.cc/presets/new", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(presetData),
+        credentials: "include",
+      });
 
       if (response.ok) {
         const data = await response.json();

@@ -9,13 +9,6 @@ const {
   getPresetId,
 } = require("../controllers/presetControllers");
 
-router.use(
-  cors({
-    credentials: true,
-    origin: "https://knz04.github.io/midi-mixer",
-  })
-);
-
 router.post("/new", createPreset);
 router.get("/:userId", getPreset);
 router.put("/:id", updatePreset);

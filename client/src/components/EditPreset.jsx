@@ -11,7 +11,7 @@ export default function EditPreset({ preset, onClose, onUpdate, onDelete }) {
     const fetchPresets = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/presets/" + localStorage.getItem("userId"),
+          "https://api.sketchmidi.cc/presets/" + localStorage.getItem("userId"),
           { withCredentials: true }
         );
         setPresets(response.data);
@@ -56,10 +56,9 @@ export default function EditPreset({ preset, onClose, onUpdate, onDelete }) {
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this preset?")) {
       try {
-        await axios.delete(
-          `https://knz04.github.io/midi-mixer/presets/${preset._id}`,
-          { withCredentials: true }
-        );
+        await axios.delete(`https://api.sketchmidi.cc/presets/${preset._id}`, {
+          withCredentials: true,
+        });
         toast.success("Preset deleted successfully!");
         localStorage.removeItem("selectedPresetId"); // Clear local storage
         onDelete(); // Trigger refresh on the parent component

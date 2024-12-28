@@ -9,14 +9,6 @@ const {
   logoutUser,
 } = require("../controllers/authControllers");
 
-//middleware
-router.use(
-  cors({
-    credentials: true,
-    origin: "https://knz04.github.io/midi-mixer",
-  })
-);
-
 router.get("/", test);
 router.post("/register", registerUser);
 router.post("/login", loginUser);

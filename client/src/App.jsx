@@ -10,7 +10,7 @@ import { UserContextProvider } from "../context/userContext";
 import "./App.css";
 import "./Mixer.css";
 
-axios.defaults.baseURL = "https://knz04.github.io/midi-mixer";
+axios.defaults.baseURL = "https://api.sketchmidi.cc";
 axios.defaults.withCredentials = true;
 
 const App = () => {

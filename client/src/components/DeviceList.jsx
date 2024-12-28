@@ -23,7 +23,7 @@ export default function DeviceList() {
   const fetchDevices = async () => {
     try {
       const response = await axios.get(
-        "https://knz04.github.io/midi-mixer/devices/:id",
+        "https://api.sketchmidi.cc/devices/:id",
         {
           withCredentials: true,
         }
@@ -40,7 +40,7 @@ export default function DeviceList() {
   const fetchPresets = async () => {
     try {
       const response = await axios.get(
-        "https://knz04.github.io/midi-mixer/presets/:id",
+        "https://api.sketchmidi.cc/presets/:id",
         {
           withCredentials: true,
         }
@@ -104,7 +104,7 @@ export default function DeviceList() {
   const fetchDeviceDetails = async (deviceId) => {
     try {
       const response = await axios.get(
-        `https://knz04.github.io/midi-mixer/devices/get-device/${deviceId}`,
+        `https://api.sketchmidi.cc/devices/get-device/${deviceId}`,
         {
           withCredentials: true,
         }
