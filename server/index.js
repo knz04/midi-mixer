@@ -20,7 +20,11 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: ["http://localhost:5173/", "https://www.sketchmidi.cc/"], // Your frontend URL
+    origin: [
+      "http://localhost:5173",
+      "https://www.sketchmidi.cc",
+      "https://sketchmidi.vercel.app",
+    ], // Your frontend URL
     credentials: true, // Allow cookies
   })
 );
