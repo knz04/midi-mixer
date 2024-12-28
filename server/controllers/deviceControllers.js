@@ -13,6 +13,7 @@ const mqttOptions = {
 };
 
 const client = mqtt.connect(mqttOptions);
+let topic = "";
 let channels = [];
 let midiMessage = [];
 
@@ -49,24 +50,8 @@ function convertChannelsToMidi(channels) {
   return ";" + midiMessages.join(";");
 }
 
-const topic = "midi/+/messages";
-let outTopic = [];
-const message = "test";
-
 client.on("connect", () => {
   console.log("Ready to send.");
-  client.subscribe(topic, (err) => {
-    if (err) {
-      console.error("Failed to subscribe:", err);
-    } else {
-      console.log(`Subscribed to topic (send): ${topic}/receive`);
-    }
-  });
-});
-
-client.on("message", (topic) => {
-  console.log(topic);
-  outTopic = topic + "/receive";
 });
 
 const createDevice = async (req, res) => {
@@ -91,11 +76,11 @@ const createDevice = async (req, res) => {
       }
 
       // Check if device name already exists
-      const exist = await Device.findOne({ deviceName });
+      const exist = await Device.findOne({ deviceName, userId });
       if (exist) {
         return res.json({
           error:
-            "This device name is already taken. Please choose a different name.",
+            "This device name is already taken by another device for this user. Please choose a different name.",
         });
       }
 
@@ -129,6 +114,14 @@ const getDevice = async (req, res) => {
       }
 
       const userId = user.id;
+
+      // const exist = await Device.findOne({ deviceName, userId });
+      // if (exist) {
+      //   return res.json({
+      //     error:
+      //       "This device name is already taken by another device for this user. Please choose a different name.",
+      //   });
+      // }
 
       try {
         // Fetch devices for the user
@@ -218,6 +211,15 @@ async function loadPreset(req, res) {
       return res.status(404).json({ error: "Preset not found." });
     }
 
+    // Update device with the selected presetId
+    const updatedDevice = await Device.findByIdAndUpdate(
+      id,
+      { presetId },
+      { new: true }
+    );
+    res.status(200).json(updatedDevice);
+    topic = `midi/${updatedDevice.pairId}/preset`;
+
     // Get channels from the preset
     channels = presetInfo.channels;
     console.log("Channels:", channels);
@@ -227,60 +229,52 @@ async function loadPreset(req, res) {
     console.log("MIDI Message:", midiMessage);
 
     // Publish the MIDI message to the MQTT topic
-    client.publish(outTopic, midiMessage, (err) => {
+    client.publish(topic, midiMessage, (err) => {
       if (err) {
         console.error("Failed to publish message:", err);
       } else {
-        console.log(`Message published to topic: ${outTopic}`);
+        console.log(`Message published to topic: ${topic}`);
       }
     });
-
-    // Update device with the selected presetId
-    const updatedDevice = await Device.findByIdAndUpdate(
-      id,
-      { presetId },
-      { new: true }
-    );
-    res.status(200).json(updatedDevice);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to update device." });
   }
 }
 
-const removePreset = async (req, res) => {
-  try {
-    const { presetId } = req.body;
+// const removePreset = async (req, res) => {
+//   try {
+//     const { presetId } = req.body;
 
-    // Find device by ID
-    const id = req.params.id;
-    const deviceExist = await Device.findById(id);
-    if (!deviceExist) {
-      return res.status(404).json({ error: "Device not found." });
-    }
+//     // Find device by ID
+//     const id = req.params.id;
+//     const deviceExist = await Device.findById(id);
+//     if (!deviceExist) {
+//       return res.status(404).json({ error: "Device not found." });
+//     }
 
-    // Check if the current presetId matches
-    if (deviceExist.presetId.toString() !== presetId) {
-      return res
-        .status(404)
-        .json({ error: "Preset not found on this device." });
-    }
+//     // Check if the current presetId matches
+//     if (deviceExist.presetId.toString() !== presetId) {
+//       return res
+//         .status(404)
+//         .json({ error: "Preset not found on this device." });
+//     }
 
-    // Set the presetId to null
-    deviceExist.presetId = null;
+//     // Set the presetId to null
+//     deviceExist.presetId = null;
 
-    // Save the updated device
-    await deviceExist.save();
+//     // Save the updated device
+//     await deviceExist.save();
 
-    return res.status(200).json({
-      message: "Preset removed from device successfully",
-      device: deviceExist,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "Internal server error" });
-  }
-};
+//     return res.status(200).json({
+//       message: "Preset removed from device successfully",
+//       device: deviceExist,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({ error: "Internal server error" });
+//   }
+// };
 
 const getDeviceId = async (req, res) => {
   try {
@@ -302,6 +296,6 @@ module.exports = {
   updateDevice,
   deleteDevice,
   loadPreset,
-  removePreset,
+  // removePreset,
   getDeviceId,
 };

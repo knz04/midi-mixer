@@ -1,90 +1,6 @@
 const Preset = require("../models/preset");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
-const mqtt = require("mqtt");
-const bodyParser = require("body-parser");
-
-const mqttOptions = {
-  host: "e0d1458af7764ee788c14d0501883ccb.s1.eu.hivemq.cloud",
-  port: 8883,
-  username: "Midi",
-  password: "midimidi",
-  protocol: "mqtts", // Secure MQTT
-};
-
-const client = mqtt.connect(mqttOptions);
-
-client.on("connect", () => {
-  console.log("Ready to receive.");
-  const topic = "midi/+/preset"; // Subscribe to all topics under 'midi'
-  client.subscribe(topic, (err) => {
-    if (err) {
-      console.error("Failed to subscribe:", err);
-    } else {
-      console.log(`Subscribed to topic (receive): ${topic}`);
-    }
-  });
-});
-
-// Shared variable to store the latest parsed MIDI message(s)
-let latestMidiMessages = [];
-
-// MQTT Client: Parse MIDI messages and store them
-client.on("message", (topic, message) => {
-  console.log(`Message received on topic ${topic}: ${message.toString()}`);
-
-  // Split the MIDI message string into individual messages by ";"
-  const midiMessages = message
-    .toString()
-    .split(";")
-    .filter((msg) => msg.length > 0);
-
-  // Initialize an array to store the converted data
-  const databaseFormatData = [];
-
-  // Process each MIDI message
-  midiMessages.forEach((midiMessage) => {
-    const channelMatch = midiMessage.match(/C(\d+)/);
-    const nodeMatch = midiMessage.match(/N(\d+)/);
-    const velocityMatch = midiMessage.match(/V(\d+)/);
-
-    if (!channelMatch || !nodeMatch || !velocityMatch) {
-      console.error("Invalid MIDI message format");
-      return;
-    }
-
-    const channel = parseInt(channelMatch[1], 10); // Extract channel as a number
-    const node = nodeMatch[1]; // Extract node as a string
-    const velocity = parseInt(velocityMatch[1], 10); // Extract velocity as a number
-
-    // Determine the component type based on the node prefix
-    let componentType = null;
-    if (node.startsWith("6")) {
-      componentType = "rotary";
-    } else if (node.startsWith("8")) {
-      componentType = "fader";
-    } else if (node.startsWith("7")) {
-      componentType = "button";
-    } else {
-      console.error("Unknown component type.");
-      return;
-    }
-
-    // Convert the velocity for button components
-    const value =
-      componentType === "button" ? (velocity === 127 ? true : false) : velocity;
-
-    // Add the parsed data to the array
-    databaseFormatData.push({
-      channel: parseInt(node[1], 10) - 1, // Convert the second digit of node to channel index (subtract 1)
-      component: componentType,
-      value,
-    });
-  });
-
-  // Log the final converted data
-  console.log("Converted to database format:", databaseFormatData);
-});
 
 // Create Preset: Use the stored MIDI message(s)
 const createPreset = async (req, res) => {
@@ -99,31 +15,20 @@ const createPreset = async (req, res) => {
       const userId = user.id;
 
       try {
-        const { presetName, description } = req.body;
+        const { presetName, description, channels } = req.body;
 
         if (!presetName) {
           return res.json({ error: "Preset name is required." });
         }
 
         // Check if the preset name is unique
-        const exist = await Preset.findOne({ presetName });
+        const exist = await Preset.findOne({ presetName, userId });
         if (exist) {
-          return res.json({ error: "This preset name is already taken." });
+          return res.json({
+            error:
+              "This device name is already taken by another device for this user. Please choose a different name.",
+          });
         }
-
-        // Check if MIDI messages are available
-        if (!latestMidiMessages.length) {
-          return res
-            .status(400)
-            .json({ error: "No MIDI messages available for preset creation." });
-        }
-
-        // Construct preset data for each MIDI message
-        const channels = latestMidiMessages.map((msg) => ({
-          channel: msg.channel,
-          component: msg.component,
-          value: msg.value,
-        }));
 
         // Create the new preset
         const preset = await Preset.create({
@@ -137,9 +42,6 @@ const createPreset = async (req, res) => {
         await User.findByIdAndUpdate(userId, {
           $push: { presets: preset._id },
         });
-
-        // Clear the stored MIDI messages after usage
-        latestMidiMessages = [];
 
         return res.json(preset);
       } catch (error) {

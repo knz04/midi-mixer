@@ -1,14 +1,28 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import AddPreset from "./AddPreset";
 
 const SavePreset = (channels) => {
-  console.log("to save: ", channels);
+  // console.log("to save: ", channels);
   const [presets, setPresets] = useState([]);
   const [selectedPreset, setSelectedPreset] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showAddForm, setShowAddForm] = useState(false);
 
+  const handleAddOpenForm = () => {
+    setShowAddForm(true);
+  };
+
+  const handleAddCloseForm = () => {
+    setShowAddForm(false);
+    fetchPresets();
+  };
+
+  const handlePresetCreated = () => {
+    fetchPresets();
+  };
   // Function to convert channels into the required database format
   const convertToDatabaseFormat = (input) => {
     const result = [];
@@ -76,6 +90,7 @@ const SavePreset = (channels) => {
   // Close form
   const handleCloseForm = () => {
     setShowForm(false);
+    fetchPresets();
   };
 
   // Save preset to the backend
@@ -126,22 +141,28 @@ const SavePreset = (channels) => {
           <div className="bg-white p-6 rounded shadow-lg w-80">
             <h3 className="text-lg font-semibold mb-4">Update Preset</h3>
 
-            <div className="mb-4">
-              <select
-                value={selectedPreset}
-                onChange={handlePresetChange}
-                className="w-full p-2 border rounded"
-              >
-                <option value="" disabled>
-                  Select a preset
-                </option>
-                {presets.map((preset) => (
-                  <option key={preset._id} value={preset._id}>
-                    {preset.presetName}
+            {presets.length === 0 ? (
+              <div className="flex flex-col items-center">
+                <p>No saved presets.</p>
+              </div>
+            ) : (
+              <div className="pt-4">
+                <select
+                  value={selectedPreset} // This is where the selected preset value is controlled
+                  onChange={handlePresetChange}
+                  className="mb-4 p-2 border rounded hover:border-blue-500 transition"
+                >
+                  <option value="" disabled>
+                    Select a preset
                   </option>
-                ))}
-              </select>
-            </div>
+                  {presets.map((preset) => (
+                    <option key={preset._id} value={preset._id}>
+                      {preset.presetName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             <div className="flex justify-between">
               <button
@@ -156,6 +177,22 @@ const SavePreset = (channels) => {
               >
                 Cancel
               </button>
+            </div>
+
+            <button
+              onClick={handleAddOpenForm}
+              className="mt-4 p-2 bg-green-500 text-white rounded"
+            >
+              Create a new preset
+            </button>
+            <div className="flex items-center">
+              {showAddForm && (
+                <AddPreset
+                  onClose={handleAddCloseForm}
+                  onPresetCreated={handlePresetCreated}
+                  preset={convertToDatabaseFormat(channels.channels)}
+                />
+              )}
             </div>
           </div>
         </div>

@@ -1,27 +1,47 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
 export default function EditPreset({ preset, onClose, onUpdate, onDelete }) {
   const [presetName, setPresetName] = useState(preset.presetName);
   const [description, setDescription] = useState(preset.description);
-  const [channels, setChannels] = useState([...preset.channels]);
+  const [presets, setPresets] = useState([]);
 
-  // Handle changes to channels
-  const handleChannelChange = (index, field, value) => {
-    const updatedChannels = channels.map((channel, i) =>
-      i === index ? { ...channel, [field]: value } : channel
-    );
-    setChannels(updatedChannels);
-  };
+  useEffect(() => {
+    const fetchPresets = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/presets/" + localStorage.getItem("userId"),
+          { withCredentials: true }
+        );
+        setPresets(response.data);
+      } catch (error) {
+        console.error("Error fetching presets:", error);
+        // toast.error("Failed to fetch presets.");
+      }
+    };
+
+    fetchPresets();
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Check if the device name already exists for the user
+    const presetNameExists = presets.some(
+      (preset) => preset.presetName === presetName
+    );
+    if (presetNameExists) {
+      toast.error(
+        "Preset name is already taken. Please choose a different name."
+      );
+      return; // Don't proceed with form submission if name is taken
+    }
+
     try {
       const response = await axios.put(
         `/presets/${preset._id}`,
-        { presetName, description, channels },
+        { presetName, description },
         { withCredentials: true }
       );
       toast.success("Preset updated successfully!");
@@ -70,57 +90,7 @@ export default function EditPreset({ preset, onClose, onUpdate, onDelete }) {
               className="mt-1 w-full px-3 py-2 border rounded-md"
             />
           </label>
-          <h3 className="text-lg font-semibold mb-2">Channels:</h3>
-          {channels.map((channel, index) => (
-            <div key={index} className="mb-4 p-4 border rounded-md">
-              <strong className="block mb-2">Channel {index + 1}</strong>
-              <label className="block mb-2">
-                Component:
-                <select
-                  value={channel.component}
-                  onChange={(e) =>
-                    handleChannelChange(index, "component", e.target.value)
-                  }
-                  className="mt-1 w-full px-3 py-2 border rounded-md"
-                >
-                  <option value="rotary">Rotary</option>
-                  <option value="fader">Fader</option>
-                  <option value="button">Button</option>
-                </select>
-              </label>
-              {(channel.component === "rotary" ||
-                channel.component === "fader") && (
-                <label className="block mb-2">
-                  Value:
-                  <input
-                    type="number"
-                    value={channel.value}
-                    onChange={(e) =>
-                      handleChannelChange(
-                        index,
-                        "value",
-                        parseInt(e.target.value, 10)
-                      )
-                    }
-                    className="mt-1 w-full px-3 py-2 border rounded-md"
-                  />
-                </label>
-              )}
-              {channel.component === "button" && (
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={channel.button}
-                    onChange={(e) =>
-                      handleChannelChange(index, "button", e.target.checked)
-                    }
-                    className="mr-2"
-                  />
-                  Mute
-                </label>
-              )}
-            </div>
-          ))}
+
           <div className="flex justify-end space-x-2">
             <button
               type="submit"

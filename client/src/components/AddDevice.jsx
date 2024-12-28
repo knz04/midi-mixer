@@ -1,14 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 const AddDevice = ({ onClose }) => {
   const [deviceName, setDeviceName] = useState("");
   const [pairId, setPairId] = useState("");
+  const [devices, setDevices] = useState([]);
+
+  // Fetch devices when the component mounts
+  useEffect(() => {
+    const fetchDevices = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/devices/" + localStorage.getItem("userId"),
+          { withCredentials: true }
+        );
+        setDevices(response.data);
+      } catch (error) {
+        console.error("Error fetching devices:", error);
+        toast.error("Failed to fetch devices.");
+      }
+    };
+
+    fetchDevices();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Data to be sent to the backend, including presetId set to null
+    // Check if the device name already exists for the user
+    const deviceNameExists = devices.some(
+      (device) => device.deviceName === deviceName
+    );
+    if (deviceNameExists) {
+      toast.error(
+        "Device name is already taken. Please choose a different name."
+      );
+      return; // Don't proceed with form submission if name is taken
+    }
+
     const deviceData = {
       deviceName,
       pairId,
@@ -16,27 +46,21 @@ const AddDevice = ({ onClose }) => {
     };
 
     try {
-      // Make a request to the backend to create a new device, including credentials (cookies)
-      const response = await fetch("http://localhost:8000/devices/new", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(deviceData),
-        credentials: "include", // Include cookies in the request
-      });
+      const response = await axios.post(
+        "http://localhost:8000/devices/new",
+        deviceData,
+        { withCredentials: true }
+      );
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Device created:", data);
+      if (response.status === 200) {
         toast.success("Device created successfully!");
         onClose(); // Close the form after successful creation
       } else {
-        console.error("Failed to create device");
-        toast.error("Failed to create device");
+        toast.error("Failed to create device.");
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error creating device:", error);
+      toast.error("Device with a matching Pair ID already exists.");
     }
   };
 

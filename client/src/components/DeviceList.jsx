@@ -18,7 +18,6 @@ export default function DeviceList() {
   const [presetLoaded, setPresetLoaded] = useState(false); // Track if preset is loaded
   const [presets, setPresets] = useState([]); // State for presets
   const [fetchedPreset, setFetchedPreset] = useState("");
-  const [selectedPresetId, setSelectedPresetId] = useState("");
 
   // Fetch list of devices
   const fetchDevices = async () => {
@@ -29,7 +28,6 @@ export default function DeviceList() {
       setDevices(response.data);
     } catch (error) {
       console.error(error);
-      toast.error("Failed to fetch devices.");
     } finally {
       setLoading(false);
     }
@@ -135,6 +133,8 @@ export default function DeviceList() {
   const handleCloseForm = () => {
     setShowForm(false);
     setShowEditForm(false);
+    fetchDevices();
+    fetchDeviceDetails(selectedDevice);
   };
 
   const handleDeviceCreated = () => {
@@ -180,25 +180,31 @@ export default function DeviceList() {
       localStorage.removeItem("selectedDevice");
     } catch (error) {
       console.error("Error loading preset into device:", error);
-      toast.error("Failed to load preset into device.");
+      toast.error("No presets to load to.");
     }
   };
 
-  const handleRemovePreset = async () => {
-    try {
-      await axios.put(
-        `/devices/remove-preset/${selectedDevice}`,
-        { presetId: fetchedDevice.presetId }, // Ensure presetId exists
-        { withCredentials: true }
-      );
-      toast.success("Preset removed successfully.");
-      setSelectedDevice("");
-      localStorage.removeItem("selectedDevice");
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to remove preset.");
-    }
+  const handleDeviceDeleted = () => {
+    setFetchedDevice(null); // Clear the fetched device data
+    setSelectedDevice(""); // Optionally clear selected device as well
+    fetchDevices(); // Refresh devices list after deletion
   };
+
+  // const handleRemovePreset = async () => {
+  //   try {
+  //     await axios.put(
+  //       `/devices/remove-preset/${selectedDevice}`,
+  //       { presetId: fetchedDevice.presetId }, // Ensure presetId exists
+  //       { withCredentials: true }
+  //     );
+  //     toast.success("Preset removed successfully.");
+  //     setSelectedDevice("");
+  //     localStorage.removeItem("selectedDevice");
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error("Failed to remove preset.");
+  //   }
+  // };
 
   const fetchPresetDetails = async (presetId) => {
     try {
@@ -251,7 +257,9 @@ export default function DeviceList() {
 
             {/* Display DeviceDetails for selected device */}
             {fetchedDevice && selectedDevice && (
-              <DeviceDetails fetchedDevice={fetchedDevice} />
+              <div className="pb-2">
+                <DeviceDetails fetchedDevice={fetchedDevice} />
+              </div>
             )}
           </div>
 
@@ -260,9 +268,18 @@ export default function DeviceList() {
             {selectedDevice && (
               <button
                 onClick={handleOpenEditForm}
-                className="mb-4 p-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+                className="mb-4 p-2 mx-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
               >
                 Edit Device
+              </button>
+            )}
+            {/* Import and Remove Preset buttons */}
+            {selectedDevice && fetchedDevice && (
+              <button
+                onClick={handleImportPreset}
+                className="mr-2 p-2 mx-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+              >
+                Load Preset to Device
               </button>
             )}
           </div>
@@ -288,15 +305,14 @@ export default function DeviceList() {
                 device={fetchedDevice} // Pass the fetched device details
                 onClose={handleCloseForm}
                 onUpdate={fetchDevices} // Refresh the device list after editing
-                onDelete={fetchDevices} // Refresh the device list after deletion
+                onDelete={handleDeviceDeleted} // Refresh the device list after deletion
               />
             </div>
           </div>
         )}
       </div>
-      <div className="py-8">
-        <hr />
-      </div>
+
+      <hr className="mt-8 py-6" />
 
       <div>
         {selectedDevice && (
@@ -304,26 +320,6 @@ export default function DeviceList() {
             fetchedDevice={fetchedDevice}
             onPresetChange={handleSelectedPresetChange}
           />
-        )}
-      </div>
-
-      <div>
-        {/* Import and Remove Preset buttons */}
-        {selectedDevice && fetchedDevice && (
-          <div className="mb-4">
-            <button
-              onClick={handleImportPreset}
-              className="mr-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-            >
-              Load Preset
-            </button>
-            <button
-              onClick={handleRemovePreset}
-              className="p-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-            >
-              Remove Preset
-            </button>
-          </div>
         )}
       </div>
     </div>

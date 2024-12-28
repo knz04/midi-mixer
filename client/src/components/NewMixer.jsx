@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Channel from "./Channel";
 import SavePreset from "./SavePreset";
+import AddPreset from "./AddPreset";
 import mqtt from "mqtt";
 
 // MQTT Setup
@@ -16,8 +17,17 @@ const options = {
   reconnectPeriod: 1000, // Auto-reconnect every 1 second
 };
 
-const NewMixer = ({ state, update, preset, device, setState, setUpdate }) => {
+const NewMixer = ({
+  state,
+  update,
+  preset,
+  device,
+  setState,
+  setUpdate,
+  setToSave,
+}) => {
   const topic = `midi/${device}/update`;
+  console.log("Topic: ", topic);
   const [mqttMessage, setMqttMessage] = useState("");
   const [channels, setChannels] = useState([
     {
@@ -158,7 +168,7 @@ const NewMixer = ({ state, update, preset, device, setState, setUpdate }) => {
         channels[channel - 1].activeFader = true;
       } else if (component === "button") {
         channels[channel - 1].button = value;
-        channels[channel - 1].activeButton = value === 127;
+        channels[channel - 1].activeButton = true;
       }
     });
 
@@ -196,10 +206,8 @@ const NewMixer = ({ state, update, preset, device, setState, setUpdate }) => {
   };
 
   const toSave = update ? latestChannelsRef.current : channelsToUse;
-
-  useEffect(() => {
-    console.log("Current channel state in parent:", channelsToUse);
-  }, [channelsToUse]);
+  console.log("Current channel state in parent:", channelsToUse);
+  console.log("toSave: ", toSave);
 
   return (
     <div>

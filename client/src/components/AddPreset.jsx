@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import axios from "axios";
 
-const AddPreset = ({ onClose }) => {
+const AddPreset = ({ onClose, preset }) => {
+  // console.log("AddPreset: ", preset);
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -11,26 +13,45 @@ const AddPreset = ({ onClose }) => {
 
   const [presetName, setPresetName] = useState("");
   const [description, setDescription] = useState("");
-  const [channels, setChannels] = useState([
-    { rotary: 0, fader: 0, button: false },
-  ]);
+  const [channels, setChannels] = useState(preset);
+  const [presets, setPresets] = useState([]);
 
-  const handleAddChannel = () => {
-    setChannels([...channels, { rotary: 0, fader: 0, button: false }]);
-  };
+  useEffect(() => {
+    const fetchPresets = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/presets/" + localStorage.getItem("userId"),
+          { withCredentials: true }
+        );
+        setPresets(response.data);
+      } catch (error) {
+        console.error("Error fetching presets:", error);
+        // toast.error("Failed to fetch presets.");
+      }
+    };
+
+    fetchPresets();
+  }, []);
 
   const handleSubmit = async (e) => {
+    console.log("AddPreset preset: ", preset);
     e.preventDefault();
+
+    // Check if the device name already exists for the user
+    const presetNameExists = presets.some(
+      (preset) => preset.presetName === presetName
+    );
+    if (presetNameExists) {
+      toast.error(
+        "Preset name is already taken. Please choose a different name."
+      );
+      return; // Don't proceed with form submission if name is taken
+    }
 
     const presetData = {
       presetName,
       description,
-      channels: channels.map((channel, index) => ({
-        channel: index + 1,
-        button: channel.button,
-        fader: channel.fader,
-        rotary: channel.rotary,
-      })),
+      channels,
     };
 
     try {
@@ -80,6 +101,7 @@ const AddPreset = ({ onClose }) => {
               className="mt-1 p-2 border border-gray-300 rounded w-full"
             />
           </div>
+
           {/* <div className="mb-4">
             <label className="block text-gray-700">Channels</label>
             <p className="text-sm text-gray-500 mb-2">

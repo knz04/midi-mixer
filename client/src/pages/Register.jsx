@@ -29,7 +29,7 @@ export default function Register() {
       } else {
         setData({});
         toast.success("Registered successfully.");
-        navigate("/login");
+        navigate("/");
       }
     } catch (error) {
       console.log(error);
@@ -59,7 +59,7 @@ export default function Register() {
               <input
                 type="text"
                 placeholder="Name"
-                value={data.email}
+                value={data.name}
                 onChange={(e) => setData({ ...data, name: e.target.value })}
                 className="w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none focus:outline-none"
               />

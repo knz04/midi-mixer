@@ -1,16 +1,42 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
 export default function EditDevice({ device, onClose, onUpdate, onDelete }) {
-  if (!device) {
-    return <div>No device selected. Please select a device to edit.</div>;
-  }
-
   const [deviceName, setDeviceName] = useState(device.deviceName || "");
+  const [devices, setDevices] = useState([]);
+
+  // Fetch devices when the component mounts
+  useEffect(() => {
+    const fetchDevices = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/devices/" + localStorage.getItem("userId"),
+          { withCredentials: true }
+        );
+        setDevices(response.data);
+      } catch (error) {
+        console.error("Error fetching devices:", error);
+        toast.error("Failed to fetch devices.");
+      }
+    };
+
+    fetchDevices();
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Check if the device name already exists for the current user
+    const deviceNameExists = devices.some(
+      (device) => device.deviceName === deviceName // Exclude the current device being edited
+    );
+    if (deviceNameExists) {
+      toast.error(
+        "Device name is already taken. Please choose a different name."
+      );
+      return; // Don't proceed with form submission if name is taken
+    }
 
     try {
       const response = await axios.put(
@@ -32,6 +58,7 @@ export default function EditDevice({ device, onClose, onUpdate, onDelete }) {
       try {
         await axios.delete(`/devices/${device._id}`, { withCredentials: true });
         toast.success("Device deleted successfully!");
+
         onDelete(); // Trigger refresh on the parent component
         onClose(); // Close the edit form
       } catch (error) {

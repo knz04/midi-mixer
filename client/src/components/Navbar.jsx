@@ -22,10 +22,12 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="w-screen h-32 md:h-16 flex flex-col md:flex-row border-b-[1px] relative justify-between p-2">
-      <span className="h-8 object-contain text-2xl font-bold">SketchMIDI</span>
+    <nav className="w-screen h-32 pt-2 md:h-16 flex flex-col md:flex-row border-b-[1px] relative justify-between p-2">
+      <span className="h-8 pt-2 object-contain text-2xl font-bold">
+        SketchMIDI
+      </span>
       {user && (
-        <div className="flex flex-row items-center justify-center">
+        <div className="flex flex-row pt-1 items-center justify-center">
           <h1 className="mr-4">Hi, {user.name}!</h1>
           <button
             onClick={handleLogout}
