@@ -207,8 +207,9 @@ export default function PresetList({ fetchedDevice, onPresetChange }) {
           )}
         </div>
       )}
+
       {showEditForm && (
-        <div>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <EditPreset
             preset={fetchedPreset}
             onClose={handleCloseForm}
@@ -226,6 +227,7 @@ export default function PresetList({ fetchedDevice, onPresetChange }) {
           />
         </div>
       )}
+
       {fetchedDevice ? (
         <div>
           <NewMixer
