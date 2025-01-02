@@ -115,14 +115,6 @@ const getDevice = async (req, res) => {
 
       const userId = user.id;
 
-      // const exist = await Device.findOne({ deviceName, userId });
-      // if (exist) {
-      //   return res.json({
-      //     error:
-      //       "This device name is already taken by another device for this user. Please choose a different name.",
-      //   });
-      // }
-
       try {
         // Fetch devices for the user
         const devices = await Device.find({ userId });
@@ -138,26 +130,38 @@ const getDevice = async (req, res) => {
 };
 
 const updateDevice = async (req, res) => {
-  const { deviceName, pairId } = req.body; // Get fields from request body
+  const { token } = req.cookies;
 
-  try {
-    // Check if device exists
-    const id = req.params.id;
-    const deviceExist = await Device.findById(id);
-    if (!deviceExist) {
-      return res.status(404).json({ error: "Device not found." });
-    }
+  if (token) {
+    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, user) => {
+      if (err) {
+        return res.status(401).json({ error: "Invalid token." });
+      }
 
-    // Update device data
-    const updatedDevice = await Device.findByIdAndUpdate(
-      id,
-      { deviceName, pairId },
-      { new: true }
-    );
-    res.status(200).json(updatedDevice);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Failed to update device." });
+      const { deviceName, pairId } = req.body; // Get fields from request body
+
+      try {
+        // Check if device exists
+        const id = req.params.id;
+        const deviceExist = await Device.findById(id);
+        if (!deviceExist) {
+          return res.status(404).json({ error: "Device not found." });
+        }
+
+        // Update device data
+        const updatedDevice = await Device.findByIdAndUpdate(
+          id,
+          { deviceName, pairId },
+          { new: true }
+        );
+        res.status(200).json(updatedDevice);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Failed to update device." });
+      }
+    });
+  } else {
+    res.status(401).json({ error: "No token provided." });
   }
 };
 
@@ -170,7 +174,6 @@ const deleteDevice = async (req, res) => {
 
   jwt.verify(token, process.env.JWT_SECRET, {}, async (err, user) => {
     if (err) {
-      return res.status(401).json({ error: "Invalid token." });
     }
 
     const userId = user.id;
@@ -200,45 +203,56 @@ const deleteDevice = async (req, res) => {
 };
 
 async function loadPreset(req, res) {
-  const { presetId } = req.body; // Get fields from request body
+  const { token } = req.cookies;
 
-  try {
-    // Check if device exists
-    const id = req.params.id;
-
-    const presetInfo = await Preset.findById(presetId);
-    if (!presetInfo) {
-      return res.status(404).json({ error: "Preset not found." });
-    }
-
-    // Update device with the selected presetId
-    const updatedDevice = await Device.findByIdAndUpdate(
-      id,
-      { presetId },
-      { new: true }
-    );
-    res.status(200).json(updatedDevice);
-    topic = `midi/${updatedDevice.pairId}/preset`;
-
-    // Get channels from the preset
-    channels = presetInfo.channels;
-    console.log("Channels:", channels);
-
-    // Convert channels to MIDI messages
-    midiMessage = convertChannelsToMidi(channels);
-    console.log("MIDI Message:", midiMessage);
-
-    // Publish the MIDI message to the MQTT topic
-    client.publish(topic, midiMessage, (err) => {
+  if (token) {
+    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, user) => {
       if (err) {
-        console.error("Failed to publish message:", err);
-      } else {
-        console.log(`Message published to topic: ${topic}`);
+        return res.status(401).json({ error: "Invalid token." });
+      }
+      const { presetId } = req.body; // Get fields from request body
+
+      try {
+        // Check if device exists
+        const id = req.params.id;
+
+        const presetInfo = await Preset.findById(presetId);
+        if (!presetInfo) {
+          return res.status(404).json({ error: "Preset not found." });
+        }
+
+        // Update device with the selected presetId
+        const updatedDevice = await Device.findByIdAndUpdate(
+          id,
+          { presetId },
+          { new: true }
+        );
+        res.status(200).json(updatedDevice);
+        topic = `midi/${updatedDevice.pairId}/preset`;
+
+        // Get channels from the preset
+        channels = presetInfo.channels;
+        console.log("Channels:", channels);
+
+        // Convert channels to MIDI messages
+        midiMessage = convertChannelsToMidi(channels);
+        console.log("MIDI Message:", midiMessage);
+
+        // Publish the MIDI message to the MQTT topic
+        client.publish(topic, midiMessage, (err) => {
+          if (err) {
+            console.error("Failed to publish message:", err);
+          } else {
+            console.log(`Message published to topic: ${topic}`);
+          }
+        });
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Failed to update device." });
       }
     });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Failed to update device." });
+  } else {
+    res.status(401).json({ error: "No token provided." });
   }
 }
 
