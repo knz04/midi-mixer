@@ -81,9 +81,9 @@ export default function PresetList({ fetchedDevice, onPresetChange }) {
     }
   };
 
-  // const handleOpenForm = () => {
-  //   setShowForm(true);
-  // };
+  const handleOpenForm = () => {
+    setShowForm(true);
+  };
 
   const handleOpenEditForm = () => {
     setShowEditForm(true);
@@ -208,6 +208,13 @@ export default function PresetList({ fetchedDevice, onPresetChange }) {
               Edit preset
             </button>
           )}
+          {fetchedPreset && (
+            <PresetDetails
+              fetchedPreset={fetchedPreset}
+              handleOpenEditForm={handleOpenEditForm}
+              handleOpenForm={handleOpenForm}
+            />
+          )}
         </div>
       )}
 
@@ -246,13 +253,7 @@ export default function PresetList({ fetchedDevice, onPresetChange }) {
       ) : (
         <div>Device is not available</div>
       )}
-      {/* {fetchedPreset && (
-        <PresetDetails
-          fetchedPreset={fetchedPreset}
-          handleOpenEditForm={handleOpenEditForm}
-          handleOpenForm={handleOpenForm}
-        />
-      )} */}
+
       {/* <div className="flex items-center">
         {showForm && (
           <AddPreset

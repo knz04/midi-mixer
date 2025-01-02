@@ -83,50 +83,72 @@ const getPreset = (req, res) => {
 };
 
 const updatePreset = async (req, res) => {
-  try {
-    const { presetName, description, channels } = req.body;
+  const { token } = req.cookies;
 
-    // check if preset exists
-    const id = req.params.id;
-    const presetExist = await Preset.findById(id);
-    if (!presetExist) {
-      return res.json({
-        error: "Preset not found",
-      });
-    }
+  if (token) {
+    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, user) => {
+      if (err) {
+        return res.status(401).json({ error: "Invalid token." });
+      }
+      const { presetName, description, channels } = req.body;
+      try {
+        // check if preset exists
+        const id = req.params.id;
+        const presetExist = await Preset.findById(id);
+        if (!presetExist) {
+          return res.json({
+            error: "Preset not found",
+          });
+        }
 
-    // update preset data
-    const updatedPreset = await Preset.findByIdAndUpdate(
-      req.params.id,
-      { presetName, description, channels },
-      { new: true }
-    );
-    res.status(200).json(updatedPreset);
-  } catch (error) {
-    console.log(error);
+        // update preset data
+        const updatedPreset = await Preset.findByIdAndUpdate(
+          req.params.id,
+          { presetName, description, channels },
+          { new: true }
+        );
+        res.status(200).json(updatedPreset);
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  } else {
+    res.status(401).json({ error: "No token provided." });
   }
 };
 
 const deletePreset = async (req, res) => {
-  try {
-    const presetId = req.params.id;
+  const { token } = req.cookies;
 
-    // Find and delete the preset
-    const preset = await Preset.findByIdAndDelete(presetId);
-    if (!preset) {
-      return res.status(404).json({ error: "Preset not found" });
+  if (!token) {
+    return res.status(401).json({ error: "No token provided." });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, {}, async (err, user) => {
+    if (err) {
+      return res.status(401).json({ error: "Invalid token." });
     }
 
-    // Remove the preset ID from the user's presets array
-    await User.findByIdAndUpdate(preset.userId, {
-      $pull: { presets: presetId },
-    });
+    try {
+      const presetId = req.params.id;
 
-    res.status(200).json("Preset deleted successfully");
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Server error" });
-  }
+      // Find and delete the preset
+      const preset = await Preset.findByIdAndDelete(presetId);
+      if (!preset) {
+        return res.status(404).json({ error: "Preset not found" });
+      }
+
+      // Remove the preset ID from the user's presets array
+      await User.findByIdAndUpdate(preset.userId, {
+        $pull: { presets: presetId },
+      });
+
+      res.status(200).json("Preset deleted successfully");
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Server error" });
+    }
+  });
 };
 
 const getPresetId = async (req, res) => {
