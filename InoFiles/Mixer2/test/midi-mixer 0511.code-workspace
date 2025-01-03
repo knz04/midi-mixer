@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "../../../../../../../xampp/htdocs/midi-mixer"
+		},
+		{
+			"name": "Mixer2",
+			"path": ".."
+		}
+	],
+	"settings": {}
+}
