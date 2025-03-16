@@ -55,15 +55,6 @@ C0N81V87  // Fader component on channel 2, value 87
 - Save changes using the **"Update Preset"** or **"Create New Preset"** button.
 - Load presets to your device and save them by double-tapping the rotary button.
 
-## Cloud Deployment
-- Hosted on **Oracle Cloud Infrastructure (OCI)**.
-- **Backend:** Deployed using **PM2 & Nginx** for stability.
-- **Frontend:** Uses **GitHub Actions for CI/CD** with FTP deployment.
-- Secured with **SSL and JWT authentication**.
-
-## Repository
-- GitHub: [SketchMIDI Repo](https://github.com/knz04/midi-mixer)
-
 ## Example User Login Credentials
 - **Email:** user@email.com
 - **Password:** 123456
